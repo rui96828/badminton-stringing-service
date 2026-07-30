@@ -200,10 +200,39 @@
         setLoading(true);
 
         try {
-            const response = await fetch('/api/send-order', {
+            const message = [
+                '🏸 羽毛球穿线预约订单',
+                '',
+                `下单时间：${orderData.orderTime}`,
+                `客户姓名：${orderData.name}`,
+                `联系方式：${orderData.contact}`,
+                `球拍型号：${orderData.racketModel}`,
+                '',
+                `穿线拍数：${orderData.racketCount}`,
+                `球线来源：${orderData.stringSource}`,
+                `球线型号：${orderData.stringModel}`,
+                `横线磅数：${orderData.tensionHorizontal}`,
+                `竖线磅数：${orderData.tensionVertical}`,
+                `球线颜色：${orderData.stringColor}`,
+                `护线管更换：${orderData.grommetReplace}`,
+                '',
+                `送拍时间：${orderData.dropoffDate} ${orderData.dropoffTime}`,
+                `取拍时间：${orderData.pickupDate} ${orderData.pickupTime}`,
+                '',
+                `备注：${orderData.notes}`,
+            ].join('\n');
+
+            const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData),
+                body: JSON.stringify({
+                    access_key: '1b796361-dea0-4063-8009-8dafc14ed7f6',
+                    subject: `🏸 穿线预约 - ${orderData.name} - ${orderData.dropoffDate}`,
+                    from_name: '羽毛球穿线预约系统',
+                    botcheck: '',
+                    message,
+                    ...orderData,
+                }),
             });
 
             const result = await response.json();
