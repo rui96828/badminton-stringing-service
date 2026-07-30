@@ -399,7 +399,6 @@
                     from_name: '羽毛球穿线预约系统',
                     botcheck: '',
                     message,
-                    ...order,
                 }),
             });
             const result = await response.json();
