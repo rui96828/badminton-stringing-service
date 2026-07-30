@@ -75,9 +75,17 @@
             validate: (value) => value !== '',
             message: '请选择送拍日期',
         },
+        dropoffTime: {
+            validate: (value) => value !== '',
+            message: '请选择送拍时间',
+        },
         pickupDate: {
             validate: (value) => value !== '',
             message: '请选择取拍日期',
+        },
+        pickupTime: {
+            validate: (value) => value !== '',
+            message: '请选择取拍时间',
         },
     };
 
@@ -88,6 +96,20 @@
         element.addEventListener('input', () => {
             const errorElement = document.querySelector(`.error-msg[data-for="${fieldName}"]`);
             if (errorElement && errorElement.textContent) validateField(fieldName);
+        });
+    });
+
+    ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime'].forEach((fieldName) => {
+        document.getElementById(fieldName).addEventListener('change', () => {
+            const allSelected = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
+                .every((name) => document.getElementById(name).value);
+            if (!allSelected) return;
+
+            const pickupTimeElement = document.getElementById('pickupTime');
+            const errorElement = document.querySelector('.error-msg[data-for="pickupTime"]');
+            errorElement.textContent = '';
+            pickupTimeElement.classList.remove('error');
+            validatePickupInterval();
         });
     });
 
@@ -188,14 +210,7 @@
 
         if (!validateRacketCards()) isValid = false;
 
-        const dropoffDate = document.getElementById('dropoffDate').value;
-        const pickupDate = document.getElementById('pickupDate').value;
-        if (dropoffDate && pickupDate && pickupDate < dropoffDate) {
-            isValid = false;
-            const errorElement = document.querySelector('.error-msg[data-for="pickupDate"]');
-            errorElement.textContent = '取拍日期不能早于送拍日期';
-            document.getElementById('pickupDate').classList.add('error');
-        }
+        if (!validatePickupInterval()) isValid = false;
 
         if (!isValid) {
             const firstError = form.querySelector('.error');
@@ -622,6 +637,41 @@
         element.classList.toggle('error', !valid);
         errorElement.textContent = valid ? '' : rule.message;
         return valid;
+    }
+
+    function getSlotStart(date, timeRange) {
+        if (!date || !timeRange) return null;
+        const [year, month, day] = date.split('-').map(Number);
+        const [hour, minute] = timeRange.split('-')[0].split(':').map(Number);
+        const timestamp = Date.UTC(year, month - 1, day, hour, minute);
+        return Number.isNaN(timestamp) ? null : timestamp;
+    }
+
+    function validatePickupInterval() {
+        const dropoffDateElement = document.getElementById('dropoffDate');
+        const dropoffTimeElement = document.getElementById('dropoffTime');
+        const pickupDateElement = document.getElementById('pickupDate');
+        const pickupTimeElement = document.getElementById('pickupTime');
+
+        const dropoffStart = getSlotStart(
+            dropoffDateElement.value,
+            dropoffTimeElement.value
+        );
+        const pickupStart = getSlotStart(
+            pickupDateElement.value,
+            pickupTimeElement.value
+        );
+
+        if (!dropoffStart || !pickupStart) return true;
+
+        const minimumIntervalMs = 2 * 60 * 60 * 1000;
+        const valid = pickupStart - dropoffStart >= minimumIntervalMs;
+        if (valid) return true;
+
+        const errorElement = document.querySelector('.error-msg[data-for="pickupTime"]');
+        errorElement.textContent = '取拍时间必须比送拍时间至少晚 2 小时';
+        pickupTimeElement.classList.add('error');
+        return false;
     }
 
     function setCardError(card, field, message) {

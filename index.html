@@ -145,8 +145,8 @@
                             <span class="error-msg" data-for="dropoffDate"></span>
                         </div>
                         <div class="form-group">
-                            <label for="dropoffTime">送拍时间</label>
-                            <select id="dropoffTime" name="dropoffTime">
+                            <label for="dropoffTime">送拍时间 <span class="required">*</span></label>
+                            <select id="dropoffTime" name="dropoffTime" required>
                                 <option value="">请选择</option>
                                 <option value="08:00-09:00">08:00 - 09:00</option>
                                 <option value="09:00-10:00">09:00 - 10:00</option>
@@ -176,8 +176,8 @@
                             <span class="error-msg" data-for="pickupDate"></span>
                         </div>
                         <div class="form-group">
-                            <label for="pickupTime">取拍时间</label>
-                            <select id="pickupTime" name="pickupTime">
+                            <label for="pickupTime">取拍时间 <span class="required">*</span></label>
+                            <select id="pickupTime" name="pickupTime" required>
                                 <option value="">请选择</option>
                                 <option value="08:00-09:00">08:00 - 09:00</option>
                                 <option value="09:00-10:00">09:00 - 10:00</option>
@@ -194,6 +194,7 @@
                                 <option value="20:00-21:00">20:00 - 21:00</option>
                             </select>
                             <span class="error-msg" data-for="pickupTime"></span>
+                            <small class="hint">取拍时间须比送拍时间至少晚 2 小时</small>
                         </div>
                     </div>
 
