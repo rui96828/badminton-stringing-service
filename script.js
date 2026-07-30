@@ -101,6 +101,8 @@
 
     ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime'].forEach((fieldName) => {
         document.getElementById(fieldName).addEventListener('change', () => {
+            if (fieldName !== 'pickupTime') updatePickupTimeOptions();
+
             const allSelected = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
                 .every((name) => document.getElementById(name).value);
             if (!allSelected) return;
@@ -647,6 +649,62 @@
         return Number.isNaN(timestamp) ? null : timestamp;
     }
 
+    function updatePickupTimeOptions() {
+        const dropoffDateElement = document.getElementById('dropoffDate');
+        const dropoffTimeElement = document.getElementById('dropoffTime');
+        const pickupDateElement = document.getElementById('pickupDate');
+        const pickupTimeElement = document.getElementById('pickupTime');
+        const placeholder = pickupTimeElement.options[0];
+
+        if (dropoffDateElement.value) {
+            pickupDateElement.min = dropoffDateElement.value;
+            if (
+                pickupDateElement.value &&
+                pickupDateElement.value < dropoffDateElement.value
+            ) {
+                pickupDateElement.value = '';
+            }
+        }
+
+        const dropoffStart = getSlotStart(
+            dropoffDateElement.value,
+            dropoffTimeElement.value
+        );
+        const pickupDate = pickupDateElement.value;
+
+        if (!dropoffStart || !pickupDate) {
+            pickupTimeElement.value = '';
+            pickupTimeElement.disabled = true;
+            placeholder.textContent = '请先选择送拍时间和取拍日期';
+            Array.from(pickupTimeElement.options).slice(1).forEach((option) => {
+                option.disabled = true;
+                option.hidden = true;
+            });
+            return;
+        }
+
+        const minimumPickupTime = dropoffStart + 2 * 60 * 60 * 1000;
+        let availableCount = 0;
+
+        Array.from(pickupTimeElement.options).slice(1).forEach((option) => {
+            const pickupStart = getSlotStart(pickupDate, option.value);
+            const available = pickupStart !== null && pickupStart >= minimumPickupTime;
+            option.disabled = !available;
+            option.hidden = !available;
+            if (available) availableCount += 1;
+        });
+
+        const selectedOption = pickupTimeElement.selectedOptions[0];
+        if (selectedOption && selectedOption.value && selectedOption.disabled) {
+            pickupTimeElement.value = '';
+        }
+
+        pickupTimeElement.disabled = availableCount === 0;
+        placeholder.textContent = availableCount
+            ? '请选择（仅显示间隔满 2 小时的时间）'
+            : '当天无可选时间，请选择其他取拍日期';
+    }
+
     function validatePickupInterval() {
         const dropoffDateElement = document.getElementById('dropoffDate');
         const dropoffTimeElement = document.getElementById('dropoffTime');
@@ -770,4 +828,5 @@
     }).format(new Date());
     document.getElementById('dropoffDate').setAttribute('min', today);
     document.getElementById('pickupDate').setAttribute('min', today);
+    updatePickupTimeOptions();
 })();
