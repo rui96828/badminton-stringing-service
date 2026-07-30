@@ -1,0 +1,619 @@
+/* ============================================
+   羽毛球穿线服务预约网站 - 样式表
+   ============================================ */
+
+/* --- CSS 变量 --- */
+:root {
+    --color-primary: #1a936f;
+    --color-primary-dark: #147a5b;
+    --color-primary-light: #e8f5f0;
+    --color-accent: #f4a261;
+    --color-accent-dark: #e07b3a;
+    --color-bg: #f5f7f6;
+    --color-surface: #ffffff;
+    --color-border: #dde4e0;
+    --color-text: #2c3e50;
+    --color-text-light: #6b7f8e;
+    --color-error: #e74c3c;
+    --color-error-bg: #fef2f2;
+    --color-success: #27ae60;
+    --color-success-bg: #f0faf5;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --transition: 0.2s ease;
+}
+
+/* --- 全局重置 --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- 顶部 --- */
+.header {
+    background: linear-gradient(135deg, #1a5632 0%, #1a936f 50%, #2daf7f 100%);
+    color: white;
+    padding: 32px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.header-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.logo-icon {
+    font-size: 48px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.logo-text {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.header-subtitle {
+    font-size: 15px;
+    opacity: 0.9;
+    letter-spacing: 4px;
+}
+
+/* --- 主体 --- */
+.main {
+    flex: 1;
+    padding: 32px 20px 48px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* --- 侧边信息栏 --- */
+.info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.info-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+}
+
+.info-card h3 {
+    font-size: 16px;
+    color: var(--color-primary-dark);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--color-primary-light);
+}
+
+.info-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-card ul li {
+    padding: 5px 0;
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+.info-card ul li strong {
+    color: var(--color-primary);
+}
+
+/* 价格表 */
+.price-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.price-table th {
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.price-table th:first-child {
+    border-radius: var(--radius-sm) 0 0 0;
+}
+
+.price-table th:last-child {
+    border-radius: 0 var(--radius-sm) 0 0;
+}
+
+.price-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.price-table tr:hover td {
+    background: #fafdfb;
+}
+
+.price-note {
+    font-size: 12px;
+    color: var(--color-text-light);
+    margin-top: 8px;
+}
+
+/* 颜色色块 */
+.color-swatches {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    transition: transform var(--transition);
+    cursor: default;
+}
+
+.swatch:hover {
+    transform: scale(1.2);
+}
+
+/* --- 表单区域 --- */
+.form-section {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: 32px 36px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+}
+
+.form-title {
+    font-size: 22px;
+    color: var(--color-primary-dark);
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--color-primary-light);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+
+.required {
+    color: var(--color-error);
+    font-weight: 700;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--color-text);
+    background: #fafbfb;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(26, 147, 111, 0.12);
+    background: #fff;
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: var(--color-error);
+    background: #fffafa;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.hint {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-light);
+    margin-top: 4px;
+}
+
+.error-msg {
+    display: block;
+    font-size: 12px;
+    color: var(--color-error);
+    margin-top: 4px;
+    min-height: 18px;
+}
+
+/* 单选框 */
+.radio-group {
+    display: flex;
+    gap: 20px;
+    padding: 6px 0;
+}
+
+.radio-label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 400 !important;
+    padding: 10px 18px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    user-select: none;
+}
+
+.radio-label:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+}
+
+.radio-label input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+    margin: 0;
+}
+
+.radio-label:has(input:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    font-weight: 600 !important;
+}
+
+/* 磅数输入 */
+.tension-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tension-input-row input {
+    flex: 1;
+    max-width: 160px;
+}
+
+.tension-unit {
+    font-size: 14px;
+    color: var(--color-text-light);
+    font-weight: 500;
+}
+
+/* 横竖线双磅数输入 */
+.tension-dual-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tension-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.tension-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    min-width: 32px;
+}
+
+.tension-item input {
+    flex: 1;
+    max-width: 120px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--color-text);
+    background: #fafbfb;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.tension-item input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(26, 147, 111, 0.12);
+    background: #fff;
+}
+
+.tension-item input.error {
+    border-color: var(--color-error);
+    background: #fffafa;
+}
+
+.tension-suffix {
+    font-size: 13px;
+    color: var(--color-text-light);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.tension-sep {
+    font-size: 18px;
+    color: var(--color-text-light);
+    font-weight: 700;
+    padding-top: 20px;
+}
+
+/* 送拍地址 */
+.address-box {
+    background: #f0f7f4;
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+}
+
+.address-text {
+    font-size: 15px;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+
+.address-note {
+    font-size: 13px;
+    color: var(--color-primary-dark);
+    line-height: 1.6;
+}
+
+/* 双列布局 */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* 提交按钮 */
+.submit-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all var(--transition);
+    box-shadow: 0 4px 12px rgba(26, 147, 111, 0.3);
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26, 147, 111, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 成功 / 失败 消息 */
+.success-message,
+.error-message {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.success-icon,
+.error-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+}
+
+.success-message h3 {
+    color: var(--color-success);
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.error-message h3 {
+    color: var(--color-error);
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.success-message p,
+.error-message p {
+    color: var(--color-text-light);
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.success-note {
+    font-size: 12px !important;
+    color: var(--color-text-light) !important;
+}
+
+.new-order-btn,
+.retry-btn {
+    margin-top: 20px;
+    padding: 10px 28px;
+    border: 1.5px solid var(--color-primary);
+    background: white;
+    color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.new-order-btn:hover,
+.retry-btn:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.error-message .retry-btn {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.error-message .retry-btn:hover {
+    background: var(--color-error);
+    color: white;
+}
+
+/* --- 底部 --- */
+.footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-light);
+}
+
+.footer-contact {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+/* --- 响应式 --- */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .info-sidebar {
+        order: 2;
+    }
+
+    .form-section {
+        order: 1;
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .logo-text {
+        font-size: 17px;
+        letter-spacing: 0;
+    }
+
+    .logo-icon {
+        font-size: 34px;
+    }
+
+    .header-subtitle {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-section {
+        padding: 20px 16px;
+    }
+}

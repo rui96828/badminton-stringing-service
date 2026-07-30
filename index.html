@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏸 羽毛球穿线服务 - 在线预约</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">🏸</span>
+                <span class="logo-text">重庆工商大学校内羽毛球穿线服务（茶园校区）</span>
+            </div>
+            <p class="header-subtitle">专业穿线 · 手工精调 · 快速交付</p>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <main class="main">
+        <div class="container">
+            <!-- 左侧：服务介绍 -->
+            <aside class="info-sidebar">
+                <div class="info-card">
+                    <h3>💡 服务说明</h3>
+                    <ul>
+                        <li>✅ 专业手工穿线，精准磅数</li>
+                        <li>✅ 多种品牌球线可选</li>
+                        <li>✅ 支持自带球线或我们提供</li>
+                        <li>✅ 最快当天可取</li>
+                        <li>✅ 每支球拍穿线时间约 30-45 分钟</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>💰 价格说明</h3>
+                    <table class="price-table">
+                        <thead>
+                            <tr><th>项目</th><th>费用</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>穿线手工费（每支）</td><td><strong>¥20</strong></td></tr>
+                            <tr><td>局部换护线管（≤8个）</td><td>+¥3</td></tr>
+                            <tr><td>更换一半护线管</td><td>+¥7</td></tr>
+                            <tr><td>更换全套护线管</td><td>+¥12</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="price-note">* 球线费用另计（自带线免球线费，需提供则按实际型号报价）</p>
+                    <p class="price-note">* 以上为单支拍价格，最终以确认为准</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🎯 磅数建议</h3>
+                    <ul>
+                        <li><strong>初学者：</strong>20-22 磅</li>
+                        <li><strong>进阶爱好者：</strong>22-24 磅</li>
+                        <li><strong>高水平选手：</strong>24-27 磅</li>
+                        <li><strong>专业选手：</strong>27-30+ 磅</li>
+                    </ul>
+                    <p class="price-note">磅数越高弹性越小、控制越精准，但对力量要求更高</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🎨 球线颜色参考</h3>
+                    <div class="color-swatches">
+                        <span class="swatch" style="background:#FFFFFF;border:1px solid #ddd;" title="白色"></span>
+                        <span class="swatch" style="background:#FFD700;" title="黄色"></span>
+                        <span class="swatch" style="background:#FF6B35;" title="橙色"></span>
+                        <span class="swatch" style="background:#E74C3C;" title="红色"></span>
+                        <span class="swatch" style="background:#2ECC71;" title="绿色"></span>
+                        <span class="swatch" style="background:#3498DB;" title="蓝色"></span>
+                        <span class="swatch" style="background:#9B59B6;" title="紫色"></span>
+                        <span class="swatch" style="background:#1A1A2E;" title="黑色"></span>
+                    </div>
+                    <p class="price-note">不同品牌可选颜色略有差异，以实际库存为准</p>
+                </div>
+            </aside>
+
+            <!-- 右侧：预约表单 -->
+            <section class="form-section">
+                <h2 class="form-title">📝 预约穿线下单</h2>
+
+                <form id="bookingForm" novalidate>
+                    <!-- 姓名 -->
+                    <div class="form-group">
+                        <label for="name">姓名 <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="请输入您的姓名" required>
+                        <span class="error-msg" data-for="name"></span>
+                    </div>
+
+                    <!-- 球拍型号 -->
+                    <div class="form-group">
+                        <label for="racketModel">球拍型号</label>
+                        <input type="text" id="racketModel" name="racketModel" placeholder="如：Yonex 天斧100ZZ、李宁 风刃900 等">
+                        <span class="error-msg" data-for="racketModel"></span>
+                    </div>
+
+                    <!-- 联系方式 -->
+                    <div class="form-group">
+                        <label for="contact">联系方式 <span class="required">*</span></label>
+                        <input type="text" id="contact" name="contact" placeholder="手机号 / 微信号 / QQ号" required>
+                        <span class="error-msg" data-for="contact"></span>
+                        <small class="hint">必须提供联系方式才能下单</small>
+                    </div>
+
+                    <!-- 球拍数量 -->
+                    <div class="form-group">
+                        <label for="racketCount">穿线拍数 <span class="required">*</span></label>
+                        <select id="racketCount" name="racketCount" required>
+                            <option value="">请选择</option>
+                            <option value="1">1 支</option>
+                            <option value="2">2 支</option>
+                            <option value="3">3 支</option>
+                            <option value="4">4 支</option>
+                            <option value="5">5 支</option>
+                            <option value="more">5 支以上（请在备注中说明）</option>
+                        </select>
+                        <span class="error-msg" data-for="racketCount"></span>
+                    </div>
+
+                    <!-- 球线来源 -->
+                    <div class="form-group">
+                        <label>球线来源 <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="stringSource" value="self" required>
+                                <span class="radio-custom"></span>
+                                自带球线
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="stringSource" value="provided" required>
+                                <span class="radio-custom"></span>
+                                需要提供球线
+                            </label>
+                        </div>
+                        <span class="error-msg" data-for="stringSource"></span>
+                    </div>
+
+                    <!-- 球线品牌/型号 -->
+                    <div class="form-group">
+                        <label for="stringModel">球线品牌/型号</label>
+                        <input type="text" id="stringModel" name="stringModel" placeholder="如：Yonex BG80、自备YY BG65 等">
+                        <span class="error-msg" data-for="stringModel"></span>
+                    </div>
+
+                    <!-- 护线管更换 -->
+                    <div class="form-group">
+                        <label>是否需要更换护线管 <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="grommetReplace" value="none" required>
+                                不需要更换
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="grommetReplace" value="partial" required>
+                                局部更换（≤8个）+¥3
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="grommetReplace" value="half" required>
+                                更换一半 +¥7
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="grommetReplace" value="full" required>
+                                更换全套 +¥12
+                            </label>
+                        </div>
+                        <span class="error-msg" data-for="grommetReplace"></span>
+                        <small class="hint">必须选择是否需要更换护线管才能下单</small>
+                    </div>
+
+                    <!-- 穿线磅数 - 横竖线分开 -->
+                    <div class="form-group">
+                        <label>穿线磅数 (lbs) <span class="required">*</span></label>
+                        <div class="tension-dual-row">
+                            <div class="tension-item">
+                                <span class="tension-label">横线</span>
+                                <input type="number" id="tensionHorizontal" name="tensionHorizontal"
+                                       placeholder="如：25" min="16" max="35" step="0.5" required>
+                                <span class="tension-suffix">lbs</span>
+                            </div>
+                            <span class="tension-sep">×</span>
+                            <div class="tension-item">
+                                <span class="tension-label">竖线</span>
+                                <input type="number" id="tensionVertical" name="tensionVertical"
+                                       placeholder="如：24" min="16" max="35" step="0.5" required>
+                                <span class="tension-suffix">lbs</span>
+                            </div>
+                        </div>
+                        <span class="error-msg" data-for="tension"></span>
+                        <small class="hint">建议范围 20-30 磅，横线通常比竖线高 1-2 磅</small>
+                    </div>
+
+                    <!-- 球线颜色 -->
+                    <div class="form-group">
+                        <label for="stringColor">球线颜色偏好</label>
+                        <select id="stringColor" name="stringColor">
+                            <option value="">不限 / 无偏好</option>
+                            <option value="白色">白色</option>
+                            <option value="黄色">黄色</option>
+                            <option value="橙色">橙色</option>
+                            <option value="红色">红色</option>
+                            <option value="绿色">绿色</option>
+                            <option value="蓝色">蓝色</option>
+                            <option value="紫色">紫色</option>
+                            <option value="黑色">黑色</option>
+                            <option value="粉色">粉色</option>
+                            <option value="其他">其他（请在备注中说明）</option>
+                        </select>
+                        <span class="error-msg" data-for="stringColor"></span>
+                    </div>
+
+                    <!-- 送拍地址 -->
+                    <div class="form-group">
+                        <label>📍 送拍地址</label>
+                        <div class="address-box">
+                            <p class="address-text">🏢 <strong>重庆工商大学茶园校区 13栋楼下</strong></p>
+                            <p class="address-note">📱 到达后短信联系 <strong>15123340820</strong> 即可，也可以直接放在阿姨那里，跟阿姨说会有人来取。</p>
+                        </div>
+                    </div>
+
+                    <!-- 送拍时间 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dropoffDate">送拍日期 <span class="required">*</span></label>
+                            <input type="date" id="dropoffDate" name="dropoffDate" required>
+                            <span class="error-msg" data-for="dropoffDate"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="dropoffTime">送拍时间</label>
+                            <select id="dropoffTime" name="dropoffTime">
+                                <option value="">请选择</option>
+                                <option value="08:00-09:00">08:00 - 09:00</option>
+                                <option value="09:00-10:00">09:00 - 10:00</option>
+                                <option value="10:00-11:00">10:00 - 11:00</option>
+                                <option value="11:00-12:00">11:00 - 12:00</option>
+                                <option value="12:00-13:00">12:00 - 13:00</option>
+                                <option value="13:00-14:00">13:00 - 14:00</option>
+                                <option value="14:00-15:00">14:00 - 15:00</option>
+                                <option value="15:00-16:00">15:00 - 16:00</option>
+                                <option value="16:00-17:00">16:00 - 17:00</option>
+                                <option value="17:00-18:00">17:00 - 18:00</option>
+                                <option value="18:00-19:00">18:00 - 19:00</option>
+                                <option value="19:00-20:00">19:00 - 20:00</option>
+                                <option value="20:00-21:00">20:00 - 21:00</option>
+                            </select>
+                            <span class="error-msg" data-for="dropoffTime"></span>
+                        </div>
+                    </div>
+
+                    <!-- 取拍时间 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pickupDate">取拍日期 <span class="required">*</span></label>
+                            <input type="date" id="pickupDate" name="pickupDate" required>
+                            <span class="error-msg" data-for="pickupDate"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickupTime">取拍时间</label>
+                            <select id="pickupTime" name="pickupTime">
+                                <option value="">请选择</option>
+                                <option value="08:00-09:00">08:00 - 09:00</option>
+                                <option value="09:00-10:00">09:00 - 10:00</option>
+                                <option value="10:00-11:00">10:00 - 11:00</option>
+                                <option value="11:00-12:00">11:00 - 12:00</option>
+                                <option value="12:00-13:00">12:00 - 13:00</option>
+                                <option value="13:00-14:00">13:00 - 14:00</option>
+                                <option value="14:00-15:00">14:00 - 15:00</option>
+                                <option value="15:00-16:00">15:00 - 16:00</option>
+                                <option value="16:00-17:00">16:00 - 17:00</option>
+                                <option value="17:00-18:00">17:00 - 18:00</option>
+                                <option value="18:00-19:00">18:00 - 19:00</option>
+                                <option value="19:00-20:00">19:00 - 20:00</option>
+                                <option value="20:00-21:00">20:00 - 21:00</option>
+                            </select>
+                            <span class="error-msg" data-for="pickupTime"></span>
+                        </div>
+                    </div>
+
+                    <!-- 备注 -->
+                    <div class="form-group">
+                        <label for="notes">备注</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="如有特殊要求请在此说明，如：横竖线差磅、球线品牌偏好、拍数较多等"></textarea>
+                        <span class="error-msg" data-for="notes"></span>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">提交预约</span>
+                        <span class="btn-loading" style="display:none;">
+                            <span class="spinner"></span> 提交中...
+                        </span>
+                    </button>
+                </form>
+
+                <!-- 提交成功提示 -->
+                <div class="success-message" id="successMessage" style="display:none;">
+                    <div class="success-icon">✅</div>
+                    <h3>预约提交成功！</h3>
+                    <p>您的穿线预约信息已发送，我们会尽快与您联系确认。</p>
+                    <p class="success-note">如需修改或取消，请通过您留下的联系方式与我们沟通。</p>
+                    <button class="new-order-btn" onclick="location.reload()">提交新的预约</button>
+                </div>
+
+                <!-- 提交失败提示 -->
+                <div class="error-message" id="errorMessage" style="display:none;">
+                    <div class="error-icon">❌</div>
+                    <h3>提交失败</h3>
+                    <p id="errorText"></p>
+                    <button class="retry-btn" onclick="hideError()">重新填写</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <p>© 2026 羽毛球穿线服务 · 手工精调 · 品质保证</p>
+        <p class="footer-contact">联系邮箱：3114354665@qq.com</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

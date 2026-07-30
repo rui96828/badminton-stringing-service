@@ -1,0 +1,22 @@
+{
+  "name": "badminton-stringing-service",
+  "version": "1.0.0",
+  "description": "羽毛球穿线服务在线预约系统",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "badminton",
+    "stringing",
+    "booking"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^8.6.1",
+    "nodemailer": "^9.0.3"
+  }
+}
