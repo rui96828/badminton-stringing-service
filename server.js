@@ -34,8 +34,10 @@ const orderLimiter = rateLimit({
 // QQ邮箱 SMTP 授权码获取方式：QQ邮箱 → 设置 → 账户 → POP3/SMTP服务 → 生成授权码
 const smtpPort = Number(process.env.QQ_SMTP_PORT || 465);
 
+const smtpHost = process.env.QQ_SMTP_HOST || 'smtp.qq.com';
+
 const transporter = nodemailer.createTransport({
-    host: 'smtp.qq.com',
+    host: smtpHost,
     port: smtpPort,
     secure: smtpPort === 465,
     requireTLS: smtpPort !== 465,
@@ -45,6 +47,9 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.QQ_EMAIL,           // 你的 QQ 邮箱地址
         pass: process.env.QQ_SMTP_AUTH_CODE,  // QQ 邮箱 SMTP 授权码（非密码）
+    },
+    tls: {
+        servername: 'smtp.qq.com',
     },
 });
 
