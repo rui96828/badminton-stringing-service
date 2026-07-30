@@ -68,10 +68,10 @@
                         <span class="swatch" style="background:#FFFFFF;border:1px solid #ddd;" title="白色"></span>
                         <span class="swatch" style="background:#FFD700;" title="黄色"></span>
                         <span class="swatch" style="background:#FF6B35;" title="橙色"></span>
-                        <span class="swatch" style="background:#E74C3C;" title="红色"></span>
-                        <span class="swatch" style="background:#2ECC71;" title="绿色"></span>
-                        <span class="swatch" style="background:#3498DB;" title="蓝色"></span>
-                        <span class="swatch" style="background:#9B59B6;" title="紫色"></span>
+                        <span class="swatch" style="background:#a21000;" title="红色"></span>
+                        <span class="swatch" style="background:#7072f3;" title="蓝色"></span>
+                        <span class="swatch" style="background:#910385;" title="玫红"></span>
+                        <span class="swatch" style="background:#e1c2ed;" title="粉色"></span>
                         <span class="swatch" style="background:#1A1A2E;" title="黑色"></span>
                     </div>
                     <p class="price-note">不同品牌可选颜色略有差异，以实际库存为准</p>
@@ -161,6 +161,8 @@
                                 <option value="18:00-19:00">18:00 - 19:00</option>
                                 <option value="19:00-20:00">19:00 - 20:00</option>
                                 <option value="20:00-21:00">20:00 - 21:00</option>
+                                <option value="21:00-22:00">21:00 - 22:00</option>
+                                <option value="22:00-23:00">22:00 - 23:00</option>
                             </select>
                             <span class="error-msg" data-for="dropoffTime"></span>
                         </div>
@@ -217,7 +219,7 @@
                     <h3>预约提交成功！</h3>
                     <p class="success-order" id="successOrderNumber"></p>
                     <p>感谢您对我们的支持，欢迎您下次光临。</p>
-                    <button class="new-order-btn" onclick="location.reload()">提交新的预约</button>
+                    <button type="button" class="new-order-btn" onclick="location.reload()">提交新的预约</button>
                 </div>
 
                 <!-- 提交失败提示 -->
@@ -225,7 +227,7 @@
                     <div class="error-icon">❌</div>
                     <h3>提交失败</h3>
                     <p id="errorText"></p>
-                    <button class="retry-btn" onclick="hideError()">重新填写</button>
+                    <button type="button" class="retry-btn" onclick="hideError()">重新填写</button>
                 </div>
             </section>
         </div>
