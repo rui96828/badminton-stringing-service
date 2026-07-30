@@ -101,6 +101,7 @@
 
     ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime'].forEach((fieldName) => {
         document.getElementById(fieldName).addEventListener('change', () => {
+            if (fieldName === 'dropoffDate') updateDropoffTimeOptions();
             if (fieldName !== 'pickupTime') updatePickupTimeOptions();
 
             const allSelected = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
@@ -212,6 +213,7 @@
 
         if (!validateRacketCards()) isValid = false;
 
+        if (!validateDropoffFuture()) isValid = false;
         if (!validatePickupInterval()) isValid = false;
 
         if (!isValid) {
@@ -559,6 +561,25 @@
     async function submitConfirmedOrder() {
         if (!pendingOrder) return;
 
+        updateDropoffTimeOptions();
+        updatePickupTimeOptions();
+        const timeFieldsValid = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
+            .every((fieldName) => validateField(fieldName));
+        if (
+            !timeFieldsValid ||
+            !validateDropoffFuture() ||
+            !validatePickupInterval()
+        ) {
+            closeModal(orderReviewModal);
+            pendingOrder = null;
+            const firstError = form.querySelector('.error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.focus();
+            }
+            return;
+        }
+
         confirmSubmitBtn.disabled = true;
         confirmSubmitBtn.textContent = '提交中...';
         setLoading(true);
@@ -649,6 +670,70 @@
         return Number.isNaN(timestamp) ? null : timestamp;
     }
 
+    function getShanghaiNow() {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Shanghai',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h23',
+        }).formatToParts(new Date());
+        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+        const date = `${values.year}-${values.month}-${values.day}`;
+        const timestamp = Date.UTC(
+            Number(values.year),
+            Number(values.month) - 1,
+            Number(values.day),
+            Number(values.hour),
+            Number(values.minute)
+        );
+        return { date, timestamp };
+    }
+
+    function updateDropoffTimeOptions() {
+        const dropoffDateElement = document.getElementById('dropoffDate');
+        const dropoffTimeElement = document.getElementById('dropoffTime');
+        const placeholder = dropoffTimeElement.options[0];
+        const now = getShanghaiNow();
+
+        dropoffDateElement.min = now.date;
+        if (dropoffDateElement.value && dropoffDateElement.value < now.date) {
+            dropoffDateElement.value = '';
+        }
+
+        if (!dropoffDateElement.value) {
+            dropoffTimeElement.value = '';
+            dropoffTimeElement.disabled = true;
+            placeholder.textContent = '请先选择送拍日期';
+            Array.from(dropoffTimeElement.options).slice(1).forEach((option) => {
+                option.disabled = true;
+                option.hidden = true;
+            });
+            return;
+        }
+
+        let availableCount = 0;
+        Array.from(dropoffTimeElement.options).slice(1).forEach((option) => {
+            const slotStart = getSlotStart(dropoffDateElement.value, option.value);
+            const available = slotStart !== null && slotStart >= now.timestamp;
+            option.disabled = !available;
+            option.hidden = !available;
+            if (available) availableCount += 1;
+        });
+
+        const selectedOption = dropoffTimeElement.selectedOptions[0];
+        if (selectedOption && selectedOption.value && selectedOption.disabled) {
+            dropoffTimeElement.value = '';
+        }
+
+        dropoffTimeElement.disabled = availableCount === 0;
+        placeholder.textContent = availableCount
+            ? '请选择（仅显示尚未开始的时间）'
+            : '当天无可选时间，请选择其他送拍日期';
+    }
+
     function updatePickupTimeOptions() {
         const dropoffDateElement = document.getElementById('dropoffDate');
         const dropoffTimeElement = document.getElementById('dropoffTime');
@@ -729,6 +814,23 @@
         const errorElement = document.querySelector('.error-msg[data-for="pickupTime"]');
         errorElement.textContent = '取拍时间必须比送拍时间至少晚 2 小时';
         pickupTimeElement.classList.add('error');
+        return false;
+    }
+
+    function validateDropoffFuture() {
+        const dropoffDateElement = document.getElementById('dropoffDate');
+        const dropoffTimeElement = document.getElementById('dropoffTime');
+        const dropoffStart = getSlotStart(
+            dropoffDateElement.value,
+            dropoffTimeElement.value
+        );
+
+        if (!dropoffStart) return true;
+        if (dropoffStart >= getShanghaiNow().timestamp) return true;
+
+        const errorElement = document.querySelector('.error-msg[data-for="dropoffTime"]');
+        errorElement.textContent = '该送拍时间已经开始或已过去，请重新选择';
+        dropoffTimeElement.classList.add('error');
         return false;
     }
 
@@ -820,13 +922,13 @@
         setLoading(false);
     };
 
-    const today = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'Asia/Shanghai',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-    }).format(new Date());
+    const today = getShanghaiNow().date;
     document.getElementById('dropoffDate').setAttribute('min', today);
     document.getElementById('pickupDate').setAttribute('min', today);
+    updateDropoffTimeOptions();
     updatePickupTimeOptions();
+    window.setInterval(() => {
+        updateDropoffTimeOptions();
+        updatePickupTimeOptions();
+    }, 60 * 1000);
 })();
