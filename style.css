@@ -307,9 +307,9 @@ body::before {
     position: relative;
     overflow: hidden;
     background:
-        radial-gradient(circle at 94% 7%, rgba(96, 165, 250, 0.26), transparent 28%),
-        radial-gradient(circle at 5% 94%, rgba(16, 185, 129, 0.25), transparent 30%),
-        linear-gradient(140deg, #ccefe1 0%, #c3e6e2 48%, #c9def2 100%);
+        radial-gradient(circle at 94% 7%, rgba(37, 99, 235, 0.22), transparent 28%),
+        radial-gradient(circle at 5% 94%, rgba(5, 150, 105, 0.24), transparent 30%),
+        linear-gradient(140deg, #77c8a9 0%, #68b9b5 48%, #729fc9 100%);
     border-radius: var(--radius-lg);
     padding: 32px 36px;
     box-shadow: 0 14px 38px rgba(20, 91, 75, 0.12);
