@@ -30,7 +30,7 @@
                         <li>✅ 多种品牌球线可选</li>
                         <li>✅ 支持自带球线或我们提供</li>
                         <li>✅ 最快当天可取</li>
-                        <li>✅ 每支球拍穿线时间约 30-45 分钟</li>
+                        <li>✅ 穿线法均采用业界最优秀之一的张仁环游穿线法</li>
                     </ul>
                 </div>
 
@@ -115,7 +115,11 @@
                             <option value="3">3 支</option>
                             <option value="4">4 支</option>
                             <option value="5">5 支</option>
-                            <option value="more">5 支以上（请在备注中说明）</option>
+                            <option value="6">6 支</option>
+                            <option value="7">7 支</option>
+                            <option value="8">8 支</option>
+                            <option value="9">9 支</option>
+                            <option value="10">10 支</option>
                         </select>
                         <span class="error-msg" data-for="racketCount"></span>
                     </div>
@@ -140,9 +144,10 @@
 
                     <!-- 球线品牌/型号 -->
                     <div class="form-group">
-                        <label for="stringModel">球线品牌/型号</label>
-                        <input type="text" id="stringModel" name="stringModel" placeholder="如：Yonex BG80、自备YY BG65 等">
+                        <label for="stringModel">球线品牌/型号 <span class="required">*</span></label>
+                        <input type="text" id="stringModel" name="stringModel" placeholder="请先选择球线来源" required>
                         <span class="error-msg" data-for="stringModel"></span>
+                        <small class="hint" id="stringModelHint">自带球线请填写品牌与型号；需要提供球线请在弹窗中选择。</small>
                     </div>
 
                     <!-- 护线管更换 -->
@@ -194,9 +199,9 @@
 
                     <!-- 球线颜色 -->
                     <div class="form-group">
-                        <label for="stringColor">球线颜色偏好</label>
-                        <select id="stringColor" name="stringColor">
-                            <option value="">不限 / 无偏好</option>
+                        <label for="stringColor">球线颜色 <span class="required">*</span></label>
+                        <select id="stringColor" name="stringColor" required>
+                            <option value="">请选择颜色</option>
                             <option value="白色">白色</option>
                             <option value="黄色">黄色</option>
                             <option value="橙色">橙色</option>
@@ -207,8 +212,11 @@
                             <option value="黑色">黑色</option>
                             <option value="粉色">粉色</option>
                             <option value="其他">其他（请在备注中说明）</option>
+                            <option value="白色（固定）">白色（固定）</option>
+                            <option value="随机搭配（以现货为准）">随机搭配（以现货为准）</option>
                         </select>
                         <span class="error-msg" data-for="stringColor"></span>
+                        <small class="hint" id="stringColorHint">自带球线必须填写颜色。</small>
                     </div>
 
                     <!-- 送拍地址 -->
@@ -298,8 +306,8 @@
                 <div class="success-message" id="successMessage" style="display:none;">
                     <div class="success-icon">✅</div>
                     <h3>预约提交成功！</h3>
-                    <p>您的穿线预约信息已发送，我们会尽快与您联系确认。</p>
-                    <p class="success-note">如需修改或取消，请通过您留下的联系方式与我们沟通。</p>
+                    <p class="success-order" id="successOrderNumber"></p>
+                    <p>感谢您对我们的支持，欢迎您下次光临。</p>
                     <button class="new-order-btn" onclick="location.reload()">提交新的预约</button>
                 </div>
 
@@ -314,10 +322,57 @@
         </div>
     </main>
 
+    <!-- 选择我们提供的球线 -->
+    <div class="modal-overlay" id="stringModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="stringModalTitle">
+        <div class="modal-card">
+            <h3 id="stringModalTitle">请选择球线型号</h3>
+            <div class="string-options">
+                <label class="choice-card">
+                    <input type="radio" name="providedString" value="vbs66n">
+                    <span><strong>胜利 VBS66N</strong><small>¥28 / 条</small></span>
+                </label>
+                <label class="choice-card">
+                    <input type="radio" name="providedString" value="bg65">
+                    <span><strong>YONEX BG65</strong><small>¥30 / 条</small></span>
+                </label>
+                <label class="choice-card recommended">
+                    <input type="radio" name="providedString" value="kt61">
+                    <span><strong>卡琳 KT61</strong><small>¥20 / 条 · 性价比很高，强烈推荐</small></span>
+                </label>
+                <label class="choice-card recommended">
+                    <input type="radio" name="providedString" value="kt65">
+                    <span><strong>卡琳 KT65</strong><small>¥21 / 条 · 耐打兼顾弹性，推荐</small></span>
+                </label>
+            </div>
+            <div class="stock-notice">
+                <strong>颜色及库存提示</strong>
+                <p>胜利 VBS66N 只有白色；其他球线颜色随机，将根据球拍样式及球线现货搭配，尽量做到协调美观。非常抱歉给您带来不便，感谢您的理解。球线现货会不定期更新，请留意信息更新。</p>
+            </div>
+            <span class="modal-error" id="stringModalError"></span>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" id="cancelStringChoice">取消</button>
+                <button type="button" class="primary-btn" id="confirmStringChoice">确认选择</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提交前订单清单 -->
+    <div class="modal-overlay" id="orderReviewModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="orderReviewTitle">
+        <div class="modal-card review-card">
+            <h3 id="orderReviewTitle">请确认预约订单</h3>
+            <div class="screenshot-notice">📸 请截图保存以下订单信息和订单号码</div>
+            <div id="orderReviewContent"></div>
+            <p class="payment-note">付款方式：取拍时当面结清。</p>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" id="editOrderBtn">返回修改</button>
+                <button type="button" class="primary-btn" id="confirmSubmitBtn">确认提交预约</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 底部 -->
     <footer class="footer">
         <p>© 2026 羽毛球穿线服务 · 手工精调 · 品质保证</p>
-        <p class="footer-contact">联系邮箱：3114354665@qq.com</p>
     </footer>
 
     <script src="script.js"></script>
