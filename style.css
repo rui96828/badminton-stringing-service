@@ -187,7 +187,7 @@ body::before {
 }
 
 .info-card {
-    background: var(--color-surface);
+    background: linear-gradient(145deg, #f0fdf7 0%, #e8f8f1 100%);
     border-radius: var(--radius-md);
     padding: 20px 22px;
     box-shadow: 0 5px 18px rgba(29, 78, 68, 0.07);
@@ -198,14 +198,17 @@ body::before {
 
 .info-card:nth-child(2) {
     border-top-color: #f59e0b;
+    background: linear-gradient(145deg, #fffaf0 0%, #fff1d6 100%);
 }
 
 .info-card:nth-child(3) {
     border-top-color: var(--color-secondary);
+    background: linear-gradient(145deg, #f2f7ff 0%, #e5efff 100%);
 }
 
 .info-card:nth-child(4) {
     border-top-color: #a855f7;
+    background: linear-gradient(145deg, #faf5ff 0%, #f1e8ff 100%);
 }
 
 .info-card:hover {
@@ -218,7 +221,7 @@ body::before {
     color: var(--color-primary-dark);
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 2px solid var(--color-primary-light);
+    border-bottom: 2px solid rgba(26, 147, 111, 0.16);
 }
 
 .info-card ul {
@@ -244,7 +247,7 @@ body::before {
 }
 
 .price-table th {
-    background: linear-gradient(90deg, var(--color-primary-light), var(--color-secondary-light));
+    background: linear-gradient(90deg, #d9f6e9, #dceaff);
     color: var(--color-primary-dark);
     padding: 8px 10px;
     text-align: left;
@@ -265,7 +268,7 @@ body::before {
 }
 
 .price-table tr:hover td {
-    background: #fafdfb;
+    background: rgba(255, 255, 255, 0.58);
 }
 
 .price-note {
@@ -299,7 +302,10 @@ body::before {
 .form-section {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(180deg, #ffffff 0%, #fcfefd 100%);
+    background:
+        radial-gradient(circle at 95% 8%, rgba(191, 219, 254, 0.58), transparent 26%),
+        radial-gradient(circle at 4% 94%, rgba(167, 243, 208, 0.42), transparent 25%),
+        linear-gradient(145deg, #f8fbff 0%, #f3fbf7 52%, #fff9f1 100%);
     border-radius: var(--radius-lg);
     padding: 32px 36px;
     box-shadow: 0 14px 38px rgba(20, 91, 75, 0.12);
@@ -353,7 +359,7 @@ body::before {
     border-radius: var(--radius-sm);
     font-size: 14px;
     color: var(--color-text);
-    background: #fff;
+    background: rgba(255, 255, 255, 0.82);
     transition: all var(--transition);
     font-family: inherit;
     box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
@@ -365,7 +371,7 @@ body::before {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
-    background: #fff;
+    background: #ffffff;
 }
 
 .form-group input.error,
@@ -903,7 +909,7 @@ body.modal-open {
     border: 2px dashed #93c5fd;
     border-radius: var(--radius-md);
     color: #527198;
-    background: linear-gradient(135deg, #f8fbff, var(--color-secondary-light));
+    background: linear-gradient(135deg, #edf7ff, #e6f0ff 52%, #f1ebff);
     text-align: center;
 }
 
@@ -911,7 +917,7 @@ body.modal-open {
     padding: 20px;
     border: 2px solid #cfe7dd;
     border-radius: var(--radius-md);
-    background: linear-gradient(145deg, #f0fdf8 0%, #f8fbff 72px, #fff 150px);
+    background: linear-gradient(145deg, #e9fbf4 0%, #edf5ff 48%, #faf2ff 100%);
     box-shadow: 0 5px 16px rgba(31, 114, 93, 0.08);
 }
 
