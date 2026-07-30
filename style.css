@@ -218,6 +218,25 @@ body::before {
     box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
 }
 
+.top-price-card {
+    width: calc(100% - 40px);
+    max-width: 1180px;
+    margin: 16px auto 0;
+    padding: 18px 24px;
+    border-top-color: #f59e0b;
+    background: linear-gradient(145deg, rgba(255, 246, 218, 0.78), rgba(255, 224, 170, 0.64));
+}
+
+.top-price-card .price-table {
+    table-layout: fixed;
+}
+
+.top-price-card .price-table th:last-child,
+.top-price-card .price-table td:last-child {
+    width: 28%;
+    text-align: center;
+}
+
 .info-card h3 {
     font-size: 16px;
     color: var(--color-primary-dark);
@@ -1085,6 +1104,12 @@ body.modal-open {
 
     .form-section {
         padding: 20px 16px;
+    }
+
+    .top-price-card {
+        width: calc(100% - 32px);
+        margin-top: 12px;
+        padding: 16px;
     }
 
     .modal-overlay {
