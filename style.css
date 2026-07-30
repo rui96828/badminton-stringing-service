@@ -864,6 +864,58 @@ body.modal-open {
     font-size: 12px;
 }
 
+/* 球拍检查温馨提示 */
+.racket-safety-notice {
+    margin: 0 0 22px;
+    padding: 14px 16px;
+    border: 1px solid #f0c36a;
+    border-left: 4px solid #e6a817;
+    border-radius: 10px;
+    background: #fffaf0;
+    color: #5f4a1d;
+    line-height: 1.75;
+}
+
+.racket-safety-notice strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #9a6700;
+    font-size: 15px;
+}
+
+.racket-safety-notice p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* 预约二维码 */
+.booking-qrcode-section {
+    padding: 24px 16px 18px;
+    text-align: center;
+    background: #fff;
+}
+
+.booking-qrcode-section img {
+    display: block;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 8px;
+}
+
+.booking-qrcode-section p {
+    margin: 0 0 3px;
+    color: #2d3748;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.booking-qrcode-section small {
+    display: block;
+    color: #718096;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 /* --- 响应式 --- */
 @media (max-width: 900px) {
     .container {
