@@ -706,7 +706,7 @@
         if (!dropoffDateElement.value) {
             dropoffTimeElement.value = '';
             dropoffTimeElement.disabled = true;
-            placeholder.textContent = '请先选择送拍日期';
+            placeholder.textContent = '请选择';
             Array.from(dropoffTimeElement.options).slice(1).forEach((option) => {
                 option.disabled = true;
                 option.hidden = true;
@@ -730,8 +730,8 @@
 
         dropoffTimeElement.disabled = availableCount === 0;
         placeholder.textContent = availableCount
-            ? '请选择（仅显示尚未开始的时间）'
-            : '当天无可选时间，请选择其他送拍日期';
+            ? '请选择'
+            : '无可选时间';
     }
 
     function updatePickupTimeOptions() {
@@ -760,7 +760,7 @@
         if (!dropoffStart || !pickupDate) {
             pickupTimeElement.value = '';
             pickupTimeElement.disabled = true;
-            placeholder.textContent = '请先选择送拍时间和取拍日期';
+            placeholder.textContent = '请选择';
             Array.from(pickupTimeElement.options).slice(1).forEach((option) => {
                 option.disabled = true;
                 option.hidden = true;
@@ -786,8 +786,8 @@
 
         pickupTimeElement.disabled = availableCount === 0;
         placeholder.textContent = availableCount
-            ? '请选择（仅显示间隔满 2 小时的时间）'
-            : '当天无可选时间，请选择其他取拍日期';
+            ? '请选择'
+            : '无可选时间';
     }
 
     function validatePickupInterval() {
