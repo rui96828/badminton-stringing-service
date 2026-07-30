@@ -56,7 +56,7 @@ body::before {
     inset: 0;
     z-index: -1;
     background:
-        linear-gradient(rgba(26, 30, 34, 0.80), rgba(31, 35, 39, 0.86)),
+        linear-gradient(rgba(42, 47, 51, 0.56), rgba(48, 53, 57, 0.66)),
         url('badminton-court-bg.webp') center center / cover no-repeat;
     pointer-events: none;
 }
@@ -68,10 +68,12 @@ body::before {
     padding: 14px 20px;
     border: 2px solid #e11d48;
     border-radius: 12px;
-    background: #fff1f2;
+    background: rgba(255, 241, 242, 0.88);
     color: #c40000;
     text-align: center;
     box-shadow: 0 4px 14px rgba(196, 0, 0, 0.12);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .fraud-warning strong {
@@ -187,7 +189,7 @@ body::before {
 }
 
 .info-card {
-    background: linear-gradient(145deg, rgba(226, 255, 244, 0.72), rgba(207, 244, 229, 0.58));
+    background: linear-gradient(145deg, rgba(226, 255, 244, 0.62), rgba(207, 244, 229, 0.44));
     border-radius: var(--radius-md);
     padding: 20px 22px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.20);
@@ -200,17 +202,17 @@ body::before {
 
 .info-card:nth-child(2) {
     border-top-color: #f59e0b;
-    background: linear-gradient(145deg, rgba(255, 246, 218, 0.74), rgba(255, 224, 170, 0.58));
+    background: linear-gradient(145deg, rgba(255, 246, 218, 0.64), rgba(255, 224, 170, 0.46));
 }
 
 .info-card:nth-child(3) {
     border-top-color: var(--color-secondary);
-    background: linear-gradient(145deg, rgba(225, 238, 255, 0.74), rgba(194, 218, 255, 0.58));
+    background: linear-gradient(145deg, rgba(225, 238, 255, 0.64), rgba(194, 218, 255, 0.46));
 }
 
 .info-card:nth-child(4) {
     border-top-color: #a855f7;
-    background: linear-gradient(145deg, rgba(247, 232, 255, 0.74), rgba(225, 199, 249, 0.58));
+    background: linear-gradient(145deg, rgba(247, 232, 255, 0.64), rgba(225, 199, 249, 0.46));
 }
 
 .info-card:hover {
@@ -224,7 +226,7 @@ body::before {
     margin: 16px auto 0;
     padding: 18px 24px;
     border-top-color: #f59e0b;
-    background: linear-gradient(145deg, rgba(255, 246, 218, 0.78), rgba(255, 224, 170, 0.64));
+    background: linear-gradient(145deg, rgba(255, 246, 218, 0.66), rgba(255, 224, 170, 0.48));
 }
 
 .top-price-card .price-table {
@@ -328,11 +330,13 @@ body::before {
     background:
         radial-gradient(circle at 94% 7%, rgba(37, 99, 235, 0.22), transparent 28%),
         radial-gradient(circle at 5% 94%, rgba(5, 150, 105, 0.24), transparent 30%),
-        linear-gradient(140deg, #77c8a9 0%, #68b9b5 48%, #729fc9 100%);
+        linear-gradient(140deg, rgba(119, 200, 169, 0.76) 0%, rgba(104, 185, 181, 0.74) 48%, rgba(114, 159, 201, 0.76) 100%);
     border-radius: var(--radius-lg);
     padding: 32px 36px;
     box-shadow: 0 14px 38px rgba(20, 91, 75, 0.12);
     border: 1px solid var(--color-border);
+    -webkit-backdrop-filter: blur(16px) saturate(125%);
+    backdrop-filter: blur(16px) saturate(125%);
 }
 
 .form-section::before {
@@ -1016,7 +1020,7 @@ body.modal-open {
     border: 1px solid #f0c36a;
     border-left: 4px solid #e6a817;
     border-radius: 10px;
-    background: #fffaf0;
+    background: rgba(255, 250, 240, 0.88);
     color: #5f4a1d;
     line-height: 1.75;
 }
