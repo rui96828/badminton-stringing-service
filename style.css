@@ -45,6 +45,56 @@ body {
     flex-direction: column;
 }
 
+/* 页面顶部防诈骗重要提示 */
+.fraud-warning {
+    max-width: 1180px;
+    margin: 18px auto 0;
+    padding: 14px 20px;
+    border: 2px solid #e11d48;
+    border-radius: 12px;
+    background: #fff1f2;
+    color: #c40000;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(196, 0, 0, 0.12);
+}
+
+.fraud-warning strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #b00000;
+    font-size: 18px;
+}
+
+.fraud-warning p {
+    margin: 0;
+    color: #c40000;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+@media (max-width: 1220px) {
+    .fraud-warning {
+        margin-right: 16px;
+        margin-left: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .fraud-warning {
+        margin-top: 12px;
+        padding: 12px 14px;
+    }
+
+    .fraud-warning strong {
+        font-size: 16px;
+    }
+
+    .fraud-warning p {
+        font-size: 14px;
+    }
+}
+
 /* --- 顶部 --- */
 .header {
     background: linear-gradient(135deg, #1a5632 0%, #1a936f 50%, #2daf7f 100%);
