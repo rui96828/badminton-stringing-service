@@ -23,6 +23,13 @@
         half: { name: '更换一半', price: 7 },
         full: { name: '更换全套', price: 12 },
     };
+    const GRIP_OPTIONS = {
+        purui7c: { name: '浦锐 7C', price: 3.5 },
+        huameiAce102: { name: '华美 ACE102', price: 2.5 },
+        yonex102c: { name: 'YONEX 102C', price: 10 },
+        victorGr1: { name: '胜利 GR1', price: 4 },
+        victorGr223: { name: '胜利 GR223', price: 8 },
+    };
     const COLOR_OPTIONS = [
         '白色', '黄色', '橙色', '红色', '绿色', '蓝色', '紫色', '黑色', '粉色',
         '其他（请在备注中说明）', '白色（固定）', '随机搭配（以现货为准）',
@@ -44,12 +51,18 @@
     const confirmStringChoice = document.getElementById('confirmStringChoice');
     const cancelStringChoice = document.getElementById('cancelStringChoice');
 
+    const gripModal = document.getElementById('gripModal');
+    const gripModalError = document.getElementById('gripModalError');
+    const confirmGripChoice = document.getElementById('confirmGripChoice');
+    const cancelGripChoice = document.getElementById('cancelGripChoice');
+
     const orderReviewModal = document.getElementById('orderReviewModal');
     const orderReviewContent = document.getElementById('orderReviewContent');
     const editOrderBtn = document.getElementById('editOrderBtn');
     const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
 
     let activeRacketIndex = null;
+    let activeGripRacketIndex = null;
     let pendingOrder = null;
 
     const validators = {
@@ -93,6 +106,21 @@
 
     racketDetailsContainer.addEventListener('change', (event) => {
         const sourceRadio = event.target.closest('input[data-role="string-source"]');
+        const gripRadio = event.target.closest('input[data-role="grip-needed"]');
+
+        if (gripRadio) {
+            const card = gripRadio.closest('.racket-card');
+            clearCardError(card, 'gripNeeded');
+            card.querySelectorAll('input[data-role="grip-needed"]').forEach(r => r.classList.remove('error'));
+            if (gripRadio.value === 'yes') {
+                openGripModal(Number(card.dataset.index));
+            } else {
+                delete card.dataset.providedGrip;
+                card.querySelector('[data-role="grip-summary"]').textContent = '已选择：不需要手胶。';
+            }
+            return;
+        }
+
         if (!sourceRadio) {
             if (event.target.matches('input[data-field="grommet"]')) {
                 clearCardError(event.target.closest('.racket-card'), 'grommet');
@@ -150,6 +178,35 @@
         activeRacketIndex = null;
     });
 
+    confirmGripChoice.addEventListener('click', () => {
+        const selected = document.querySelector('input[name="providedGrip"]:checked');
+        if (!selected) {
+            gripModalError.textContent = '请选择一种手胶。';
+            return;
+        }
+        const card = getRacketCard(activeGripRacketIndex);
+        if (!card) return;
+        const option = GRIP_OPTIONS[selected.value];
+        card.dataset.providedGrip = selected.value;
+        card.querySelector('[data-role="grip-summary"]').textContent =
+            `已选择：${option.name}，¥${formatMoney(option.price)} / 条。`;
+        clearCardError(card, 'gripNeeded');
+        gripModalError.textContent = '';
+        closeModal(gripModal);
+        activeGripRacketIndex = null;
+    });
+
+    cancelGripChoice.addEventListener('click', () => {
+        const card = getRacketCard(activeGripRacketIndex);
+        if (card && !card.dataset.providedGrip) {
+            const yesRadio = card.querySelector('input[data-role="grip-needed"][value="yes"]');
+            if (yesRadio) yesRadio.checked = false;
+        }
+        gripModalError.textContent = '';
+        closeModal(gripModal);
+        activeGripRacketIndex = null;
+    });
+
     editOrderBtn.addEventListener('click', () => { closeModal(orderReviewModal); pendingOrder = null; });
     confirmSubmitBtn.addEventListener('click', submitConfirmedOrder);
 
@@ -185,6 +242,7 @@
             <div class="form-group"><label>球线来源 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="stringSource_${index}" value="self" data-role="string-source" required>自带球线</label><label class="radio-label"><input type="radio" name="stringSource_${index}" value="provided" data-role="string-source" required>需要提供球线</label></div><span class="racket-error" data-error-for="stringSource"></span></div>
             <div class="form-row"><div class="form-group"><label>球线品牌/型号 <span class="required">*</span></label><input type="text" data-field="stringModel" placeholder="请先选择球线来源" required><span class="racket-error" data-error-for="stringModel"></span><small class="hint" data-role="string-model-hint">自带线请填写型号；需要提供请在弹窗选择。</small></div><div class="form-group"><label>球线颜色 <span class="required">*</span></label><select data-field="stringColor" required><option value="">请选择颜色</option>${colorOpts}</select><span class="racket-error" data-error-for="stringColor"></span><small class="hint" data-role="string-color-hint">自带球线必须选择颜色。</small></div></div>
             <div class="form-group"><label>是否需要更换护线管 <span class="required">*</span></label><div class="radio-group grommet-options"><label class="radio-label"><input type="radio" name="grommet_${index}" value="none" data-field="grommet" required>不需要</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="partial" data-field="grommet" required>局部 +¥3</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="half" data-field="grommet" required>一半 +¥7</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="full" data-field="grommet" required>全套 +¥12</label></div><span class="racket-error" data-error-for="grommet"></span><div class="grommet-tip">💡 <strong>温馨小贴士：</strong>建议您勤换护线管（全新的单线孔护线管一般可以使用3-4次，双线孔护线管一般可以使用2-3次），勤换护线管可以有效防止您的爱拍塌陷，从而有效地防止您的拍子意外断裂。</div></div>
+            <div class="form-group grip-form-group"><label>是否需要更换手胶 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="gripNeeded_${index}" value="no" data-role="grip-needed" required>不需要</label><label class="radio-label"><input type="radio" name="gripNeeded_${index}" value="yes" data-role="grip-needed" required>需要购买手胶</label></div><span class="racket-error" data-error-for="gripNeeded"></span><small class="grip-summary" data-role="grip-summary">请选择是否需要手胶。</small></div>
             <div class="form-group"><label>穿线磅数 (lbs) <span class="required">*</span></label><div class="tension-dual-row"><div class="tension-item"><span class="tension-label">横线</span><input type="number" data-field="tensionHorizontal" placeholder="如：25" min="16" max="35" step="0.5" required><span class="tension-suffix">lbs</span></div><span class="tension-sep">×</span><div class="tension-item"><span class="tension-label">竖线</span><input type="number" data-field="tensionVertical" placeholder="如：24" min="16" max="35" step="0.5" required><span class="tension-suffix">lbs</span></div></div><span class="racket-error" data-error-for="tension"></span><small class="hint">建议范围 20-30 磅，横线通常比竖线高 1-2 磅。</small></div>
         </section>`;
     }
@@ -206,6 +264,17 @@
         document.querySelectorAll('input[name="providedString"]').forEach(r => { r.checked = r.value === sv; });
         stringModalError.textContent = '';
         openModal(stringModal);
+    }
+
+    function openGripModal(index) {
+        activeGripRacketIndex = index;
+        const card = getRacketCard(index);
+        const savedValue = card.dataset.providedGrip || '';
+        document.querySelectorAll('input[name="providedGrip"]').forEach(r => {
+            r.checked = r.value === savedValue;
+        });
+        gripModalError.textContent = '';
+        openModal(gripModal);
     }
 
     function validateRacketCards() {
@@ -233,6 +302,16 @@
                 allValid = false; setCardError(card, 'grommet', '请选择这支球拍是否更换护线管');
                 card.querySelectorAll('input[data-field="grommet"]').forEach(r => r.classList.add('error'));
             }
+            const gripNeeded = card.querySelector('input[data-role="grip-needed"]:checked');
+            if (!gripNeeded) {
+                allValid = false;
+                setCardError(card, 'gripNeeded', '请选择这支球拍是否需要更换手胶');
+                card.querySelectorAll('input[data-role="grip-needed"]').forEach(r => r.classList.add('error'));
+            } else if (gripNeeded.value === 'yes' && !card.dataset.providedGrip) {
+                allValid = false;
+                setCardError(card, 'gripNeeded', '请在弹窗中选择需要购买的手胶');
+                card.querySelectorAll('input[data-role="grip-needed"]').forEach(r => r.classList.add('error'));
+            }
             const hz = card.querySelector('[data-field="tensionHorizontal"]');
             const vt = card.querySelector('[data-field="tensionVertical"]');
             const hv = Number(hz.value), vv = Number(vt.value);
@@ -252,6 +331,9 @@
             const grommet = GROMMET_OPTIONS[gv];
             const suppliedString = src.value === 'provided' ? STRING_OPTIONS[card.dataset.providedString] : null;
             const sp = suppliedString ? suppliedString.price : 0;
+            const gripNeeded = card.querySelector('input[data-role="grip-needed"]:checked').value;
+            const selectedGrip = gripNeeded === 'yes' ? GRIP_OPTIONS[card.dataset.providedGrip] : null;
+            const gripPrice = selectedGrip ? selectedGrip.price : 0;
             return {
                 number: i + 1,
                 racketModel: card.querySelector('[data-field="racketModel"]').value.trim(),
@@ -261,15 +343,19 @@
                 stringPrice: sp,
                 grommetReplace: grommet.name,
                 grommetPrice: grommet.price,
+                gripNeeded: gripNeeded === 'yes' ? '需要' : '不需要',
+                gripModel: selectedGrip ? selectedGrip.name : '无',
+                gripPrice,
                 tensionHorizontal: `${card.querySelector('[data-field="tensionHorizontal"]').value} lbs`,
                 tensionVertical: `${card.querySelector('[data-field="tensionVertical"]').value} lbs`,
                 laborPrice: LABOR_PRICE,
-                subtotal: LABOR_PRICE + grommet.price + sp,
+                subtotal: LABOR_PRICE + grommet.price + sp + gripPrice,
             };
         });
         const laborTotal = LABOR_PRICE * rackets.length;
         const grommetTotal = rackets.reduce((s, r) => s + r.grommetPrice, 0);
         const stringTotal = rackets.reduce((s, r) => s + r.stringPrice, 0);
+        const gripTotal = rackets.reduce((s, r) => s + r.gripPrice, 0);
         return {
             orderNumber: generateOrderNumber(),
             name: document.getElementById('name').value.trim(),
@@ -280,8 +366,8 @@
             pickupDate: document.getElementById('pickupDate').value,
             pickupTime: document.getElementById('pickupTime').value || '未指定',
             notes: document.getElementById('notes').value.trim() || '无',
-            laborTotal, grommetTotal, stringTotal,
-            totalAmount: laborTotal + grommetTotal + stringTotal,
+            laborTotal, grommetTotal, stringTotal, gripTotal,
+            totalAmount: laborTotal + grommetTotal + stringTotal + gripTotal,
             paymentMethod: '取拍时当面结清',
             orderTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
         };
@@ -289,16 +375,16 @@
 
     function renderOrderReview(order) {
         const racketSections = order.rackets.map(racket => `<div class="review-racket">
-            <h4>第 ${racket.number} 支球拍 · 小计 ¥${racket.subtotal}</h4>
-            ${reviewRows([['球拍型号', racket.racketModel], ['球线来源', racket.stringSource], ['球线型号', racket.stringModel], ['球线颜色', racket.stringColor], ['穿线磅数', `横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`], ['护线管', racket.grommetReplace], ['本拍费用', `手工 ¥${racket.laborPrice} + 护线管 ¥${racket.grommetPrice} + 球线 ¥${racket.stringPrice}`]])}
+            <h4>第 ${racket.number} 支球拍 · 小计 ¥${formatMoney(racket.subtotal)}</h4>
+            ${reviewRows([['球拍型号', racket.racketModel], ['球线来源', racket.stringSource], ['球线型号', racket.stringModel], ['球线颜色', racket.stringColor], ['穿线磅数', `横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`], ['护线管', racket.grommetReplace], ['手胶', racket.gripNeeded === '需要' ? `${racket.gripModel}（¥${formatMoney(racket.gripPrice)}）` : '不需要'], ['本拍费用', `手工 ¥${formatMoney(racket.laborPrice)} + 护线管 ¥${formatMoney(racket.grommetPrice)} + 球线 ¥${formatMoney(racket.stringPrice)} + 手胶 ¥${formatMoney(racket.gripPrice)}`]])}
         </div>`).join('');
         orderReviewContent.innerHTML = `<div class="order-number">订单号：${escapeHtml(order.orderNumber)}</div>
             <div class="review-section">${reviewRows([['客户姓名', order.name], ['联系方式', order.contact], ['球拍数量', `${order.racketCount} 支`], ['送拍时间', `${order.dropoffDate} ${order.dropoffTime}`], ['取拍时间', `${order.pickupDate} ${order.pickupTime}`], ['备注', order.notes]])}</div>
             ${racketSections}
             <h4>费用汇总</h4>
             <div class="review-section fee-section">
-                ${reviewRows([['穿线手工费', `¥${order.laborTotal}`], ['护线管费用', `¥${order.grommetTotal}`], ['球线费用', `¥${order.stringTotal}`]])}
-                <div class="review-row total-row"><span>总金额</span><strong>¥${order.totalAmount}</strong></div>
+                ${reviewRows([['穿线手工费', `¥${formatMoney(order.laborTotal)}`], ['护线管费用', `¥${formatMoney(order.grommetTotal)}`], ['球线费用', `¥${formatMoney(order.stringTotal)}`], ['手胶费用', `¥${formatMoney(order.gripTotal)}`]])}
+                <div class="review-row total-row"><span>总金额</span><strong>¥${formatMoney(order.totalAmount)}</strong></div>
             </div>`;
     }
 
@@ -322,7 +408,8 @@
             `球线型号：${r.stringModel}`, `球线颜色：${r.stringColor}`,
             `穿线磅数：横线 ${r.tensionHorizontal} / 竖线 ${r.tensionVertical}`,
             `护线管：${r.grommetReplace}`,
-            `本拍费用：手工 ¥${r.laborPrice} + 护线管 ¥${r.grommetPrice} + 球线 ¥${r.stringPrice} = ¥${r.subtotal}`,
+            `手胶：${r.gripNeeded === '需要' ? `${r.gripModel}（¥${formatMoney(r.gripPrice)}）` : '不需要'}`,
+            `本拍费用：手工 ¥${formatMoney(r.laborPrice)} + 护线管 ¥${formatMoney(r.grommetPrice)} + 球线 ¥${formatMoney(r.stringPrice)} + 手胶 ¥${formatMoney(r.gripPrice)} = ¥${formatMoney(r.subtotal)}`,
         ].join('\n')).join('\n\n');
         const message = [
             '🏸 羽毛球穿线预约订单', `订单号码：${order.orderNumber}`, '',
@@ -330,8 +417,9 @@
             `球拍数量：${order.racketCount} 支`, '', racketText, '',
             `送拍时间：${order.dropoffDate} ${order.dropoffTime}`,
             `取拍时间：${order.pickupDate} ${order.pickupTime}`, `备注：${order.notes}`, '',
-            '【费用汇总】', `穿线手工费：¥${order.laborTotal}`, `护线管费用：¥${order.grommetTotal}`,
-            `球线费用：¥${order.stringTotal}`, `总金额：¥${order.totalAmount}`,
+            '【费用汇总】', `穿线手工费：¥${formatMoney(order.laborTotal)}`, `护线管费用：¥${formatMoney(order.grommetTotal)}`,
+            `球线费用：¥${formatMoney(order.stringTotal)}`, `手胶费用：¥${formatMoney(order.gripTotal)}`,
+            `总金额：¥${formatMoney(order.totalAmount)}`,
             `付款方式：${order.paymentMethod}`,
         ].join('\n');
         try {
@@ -502,9 +590,17 @@
 
     function closeModal(modal) {
         modal.style.display = 'none';
-        if (stringModal.style.display === 'none' && orderReviewModal.style.display === 'none') {
+        if (
+            stringModal.style.display === 'none' &&
+            gripModal.style.display === 'none' &&
+            orderReviewModal.style.display === 'none'
+        ) {
             document.body.classList.remove('modal-open');
         }
+    }
+
+    function formatMoney(value) {
+        return Number(value).toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
     }
 
     function escapeHtml(value) {

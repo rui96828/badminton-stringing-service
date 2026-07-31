@@ -1142,6 +1142,71 @@ body.modal-open {
     gap: 10px;
 }
 
+.grip-form-group {
+    padding: 15px;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(239, 246, 255, 0.88), rgba(245, 243, 255, 0.86));
+}
+
+.grip-summary {
+    display: block;
+    margin-top: 8px;
+    color: #38578a;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.grip-modal-card::before {
+    background: linear-gradient(90deg, #f59e0b, #ef4444, #a855f7);
+}
+
+.grip-wrap-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 16px;
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    background: linear-gradient(120deg, #fff7d6, #ffedd5, #fef3c7);
+    color: #7c2d12;
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.38);
+    animation: gripNoticeGlow 1.8s ease-in-out infinite;
+}
+
+.grip-notice-icon {
+    flex: 0 0 auto;
+    font-size: 27px;
+    animation: gripNoticeShake 1.8s ease-in-out infinite;
+}
+
+.grip-wrap-notice strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #b45309;
+    font-size: 16px;
+}
+
+.grip-wrap-notice p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.75;
+}
+
+@keyframes gripNoticeGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.32); }
+    50% { box-shadow: 0 0 0 7px rgba(245, 158, 11, 0.08), 0 8px 22px rgba(180, 83, 9, 0.18); }
+}
+
+@keyframes gripNoticeShake {
+    0%, 82%, 100% { transform: rotate(0deg) scale(1); }
+    86% { transform: rotate(-10deg) scale(1.08); }
+    90% { transform: rotate(10deg) scale(1.08); }
+    94% { transform: rotate(-6deg) scale(1.04); }
+}
+
 .choice-card {
     display: flex;
     align-items: center;

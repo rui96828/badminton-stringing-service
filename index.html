@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏸 羽毛球穿线服务 - 在线预约</title>
-    <link rel="stylesheet" href="style.css?v=20260731-4">
+    <link rel="stylesheet" href="style.css?v=20260731-5">
 </head>
 <body>
     <!-- 羽毛球背景粒子容器 -->
@@ -44,6 +44,7 @@
                 <tr><td>局部换护线管（≤8个）</td><td>+¥3</td></tr>
                 <tr><td>更换一半护线管</td><td>+¥7</td></tr>
                 <tr><td>更换全套护线管</td><td>+¥12</td></tr>
+                <tr><td>手胶</td><td>¥2-4</td></tr>
             </tbody>
         </table>
         <p class="price-note">* 球线费用另计（自带线免球线费，需提供则按实际型号报价）</p>
@@ -283,6 +284,47 @@
         </div>
     </div>
 
+    <!-- 选择手胶 -->
+    <div class="modal-overlay" id="gripModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="gripModalTitle">
+        <div class="modal-card grip-modal-card">
+            <h3 id="gripModalTitle">请选择手胶型号</h3>
+            <div class="string-options grip-options">
+                <label class="choice-card">
+                    <input type="radio" name="providedGrip" value="purui7c">
+                    <span><strong>浦锐 7C</strong><small>¥3.5 / 条</small></span>
+                </label>
+                <label class="choice-card">
+                    <input type="radio" name="providedGrip" value="huameiAce102">
+                    <span><strong>华美 ACE102</strong><small>¥2.5 / 条</small></span>
+                </label>
+                <label class="choice-card">
+                    <input type="radio" name="providedGrip" value="yonex102c">
+                    <span><strong>YONEX 102C</strong><small>¥10 / 条</small></span>
+                </label>
+                <label class="choice-card">
+                    <input type="radio" name="providedGrip" value="victorGr1">
+                    <span><strong>胜利 GR1</strong><small>¥4 / 条</small></span>
+                </label>
+                <label class="choice-card">
+                    <input type="radio" name="providedGrip" value="victorGr223">
+                    <span><strong>胜利 GR223</strong><small>¥8 / 条</small></span>
+                </label>
+            </div>
+            <div class="grip-wrap-notice" role="note">
+                <span class="grip-notice-icon">⚠️</span>
+                <div>
+                    <strong>请特别注意</strong>
+                    <p>手胶默认不给您缠，在您取拍的时候将新手胶直接给您；需要给您缠好的话，请在备注中说明哦。</p>
+                </div>
+            </div>
+            <span class="modal-error" id="gripModalError"></span>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" id="cancelGripChoice">取消</button>
+                <button type="button" class="primary-btn" id="confirmGripChoice">确认选择</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 提交前订单清单 -->
     <div class="modal-overlay" id="orderReviewModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="orderReviewTitle">
         <div class="modal-card review-card">
@@ -309,6 +351,6 @@
         <p>© 2026 羽毛球穿线服务 · 手工精调 · 品质保证</p>
     </footer>
 
-    <script src="script.js?v=20260731-4"></script>
+    <script src="script.js?v=20260731-5"></script>
 </body>
 </html>
