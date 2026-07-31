@@ -371,6 +371,28 @@ select:hover ~ .mouse-feather,
     letter-spacing: 4px;
 }
 
+.header-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 14px;
+    padding: 7px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 999px;
+    background: rgba(5, 46, 42, 0.28);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 750;
+    letter-spacing: 0.4px;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.13);
+    backdrop-filter: blur(7px);
+}
+
+.header-contact span {
+    color: #fef3c7;
+    font-size: 14px;
+}
+
 /* --- 主体 --- */
 .main {
     flex: 1;
@@ -1634,6 +1656,12 @@ body.modal-open {
     .logo-text { font-size: 17px; letter-spacing: 0; }
     .logo-icon { font-size: 34px; }
     .header-subtitle { font-size: 13px; letter-spacing: 2px; }
+    .header-contact {
+        margin-top: 12px;
+        padding: 7px 12px;
+        font-size: 14px;
+    }
+    .header-contact span { font-size: 12px; }
     .form-row { grid-template-columns: 1fr; }
     .radio-group { flex-direction: column; gap: 10px; }
     .form-section { padding: 20px 16px; }
