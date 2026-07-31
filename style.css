@@ -1538,15 +1538,27 @@ body.modal-open {
 }
 
 .grommet-options {
-    flex-wrap: wrap;
-    gap: 7px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+    padding: 2px 0;
 }
 
 .grommet-options .radio-label {
-    flex: 1 1 105px;
+    min-width: 0;
     justify-content: center;
-    padding: 7px 8px;
-    font-size: 12px;
+    gap: 4px;
+    margin: 0;
+    padding: 5px 4px;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.grommet-options .radio-label input[type="radio"] {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 13px;
 }
 
 .racket-error {
@@ -1745,6 +1757,15 @@ body.modal-open {
     .header-contact span { font-size: 12px; }
     .form-row { grid-template-columns: 1fr; }
     .radio-group { flex-direction: column; gap: 10px; }
+    .radio-group.grommet-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+    }
+    .grommet-options .radio-label {
+        padding: 6px 4px;
+        font-size: 11px;
+    }
     .form-section { padding: 20px 16px; }
     .top-price-card { width: calc(100% - 32px); margin-top: 12px; padding: 16px; }
     .modal-overlay { padding: 8px; align-items: flex-start; }
