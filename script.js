@@ -66,13 +66,28 @@
 
     const validators = {
         name: { validate: (v) => v.trim().length >= 2, message: '请输入至少 2 个字的姓名' },
-        contact: { validate: (v) => v.trim().length > 0, message: '联系方式为必填项，请输入手机号/微信号/QQ号' },
+        contact: {
+            validate: (v) => /^1[3-9]\d{9}$/.test(v.trim()),
+            message: '请输入正确的11位手机号码',
+        },
+        confirmContact: {
+            validate: (v) =>
+                /^1[3-9]\d{9}$/.test(v.trim()) &&
+                v.trim() === document.getElementById('contact').value.trim(),
+            message: '两次输入的手机号码不一致，请重新确认',
+        },
         racketCount: { validate: (v) => Number.isInteger(Number(v)) && Number(v) >= 1, message: '请选择穿线拍数' },
         dropoffDate: { validate: (v) => v !== '', message: '请选择送拍日期' },
         dropoffTime: { validate: (v) => v !== '', message: '请选择送拍时间' },
         pickupDate: { validate: (v) => v !== '', message: '请选择取拍日期' },
         pickupTime: { validate: (v) => v !== '', message: '请选择取拍时间' },
     };
+
+    ['contact', 'confirmContact'].forEach((fieldName) => {
+        document.getElementById(fieldName).addEventListener('input', (event) => {
+            event.target.value = event.target.value.replace(/\D/g, '').slice(0, 11);
+        });
+    });
 
     Object.keys(validators).forEach((fieldName) => {
         const el = document.getElementById(fieldName);
@@ -82,6 +97,11 @@
             const errEl = document.querySelector(`.error-msg[data-for="${fieldName}"]`);
             if (errEl && errEl.textContent) validateField(fieldName);
         });
+    });
+
+    document.getElementById('contact').addEventListener('input', () => {
+        const confirmContact = document.getElementById('confirmContact');
+        if (confirmContact.value) validateField('confirmContact');
     });
 
     ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime'].forEach((fn) => {

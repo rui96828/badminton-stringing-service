@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏸 羽毛球穿线服务 - 在线预约</title>
-    <link rel="stylesheet" href="style.css?v=20260731-6">
+    <link rel="stylesheet" href="style.css?v=20260731-7">
 </head>
 <body>
     <!-- 羽毛球背景粒子容器 -->
@@ -113,10 +113,20 @@
 
                     <!-- 联系方式 -->
                     <div class="form-group">
-                        <label for="contact">联系方式 <span class="required">*</span></label>
-                        <input type="text" id="contact" name="contact" placeholder="手机号 / 微信号 / QQ号" required>
+                        <label for="contact">联系电话 <span class="required">*</span></label>
+                        <input type="tel" id="contact" name="contact" inputmode="numeric"
+                               autocomplete="tel" maxlength="11" placeholder="请输入11位手机号码" required>
                         <span class="error-msg" data-for="contact"></span>
-                        <small class="hint">必须提供联系方式才能下单</small>
+                        <div class="contact-notice">📞 我们将会以您提供的电话号码联系您取拍，请务必填写本人可正常接听的手机号码。</div>
+                    </div>
+
+                    <!-- 再次确认联系方式 -->
+                    <div class="form-group">
+                        <label for="confirmContact">再次确认您的联系方式 <span class="required">*</span></label>
+                        <input type="tel" id="confirmContact" name="confirmContact" inputmode="numeric"
+                               autocomplete="off" maxlength="11" placeholder="请再次输入相同的手机号码" required>
+                        <span class="error-msg" data-for="confirmContact"></span>
+                        <small class="hint">两次输入的手机号码必须完全一致才能下单。</small>
                     </div>
 
                     <!-- 球拍数量 -->
@@ -351,6 +361,6 @@
         <p>© 2026 羽毛球穿线服务 · 手工精调 · 品质保证</p>
     </footer>
 
-    <script src="script.js?v=20260731-6"></script>
+    <script src="script.js?v=20260731-7"></script>
 </body>
 </html>
