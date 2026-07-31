@@ -839,6 +839,11 @@ select:hover ~ .mouse-feather,
 }
 
 /* 送拍地址 */
+.address-heading {
+    font-size: 17px !important;
+    font-weight: 800 !important;
+}
+
 .address-box {
     background: linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%);
     border: 1.5px solid #69bca5;
@@ -853,13 +858,13 @@ select:hover ~ .mouse-feather,
 }
 
 .address-text {
-    font-size: 15px;
+    font-size: 18px;
     color: var(--color-text);
     margin-bottom: 6px;
 }
 
 .address-note {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--color-primary-dark);
     line-height: 1.6;
 }
