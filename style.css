@@ -1,5 +1,5 @@
 /* ============================================
-   羽毛球穿线服务预约网站 - 样式表
+   羽毛球穿线服务预约网站 - 样式表 (华丽版)
    ============================================ */
 
 /* --- CSS 变量 --- */
@@ -48,20 +48,182 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    cursor: default;
+    overflow-x: hidden;
 }
 
 body::before {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     background:
         linear-gradient(rgba(42, 47, 51, 0.56), rgba(48, 53, 57, 0.66)),
         url('badminton-court-bg.webp') center center / cover no-repeat;
     pointer-events: none;
 }
 
-/* 页面顶部防诈骗重要提示 */
+/* ============================================
+   全局点击特效系统
+   ============================================ */
+
+/* 点击涟漪 */
+.click-ripple {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    transform: translate(-50%, -50%) scale(0);
+    animation: rippleOut 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    mix-blend-mode: screen;
+}
+
+.click-ripple::after {
+    content: '';
+    position: absolute;
+    inset: 10%;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.6);
+    animation: rippleInner 0.7s ease-out forwards;
+}
+
+@keyframes rippleOut {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    100% {
+        width: 260px;
+        height: 260px;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes rippleInner {
+    0% { opacity: 0.8; transform: scale(0.3); }
+    100% { opacity: 0; transform: scale(1.2); }
+}
+
+/* 点击羽毛粒子 */
+.click-feather {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    font-size: 24px;
+    animation: featherFly 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+    text-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+
+@keyframes featherFly {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2) rotate(var(--rot, 45deg));
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+                calc(-50% + var(--dx, 80px)),
+                calc(-50% + var(--dy, -120px))
+            )
+            scale(0.2) rotate(calc(var(--rot, 45deg) + 180deg));
+    }
+}
+
+/* 点击星光爆发 */
+.click-star {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    animation: starBurst 1s ease-out forwards;
+}
+
+@keyframes starBurst {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+                calc(-50% + var(--sx, 60px)),
+                calc(-50% + var(--sy, -60px))
+            )
+            scale(0);
+    }
+}
+
+/* ============================================
+   羽毛球漂浮背景粒子
+   ============================================ */
+
+.bg-shuttlecock {
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+    font-size: var(--size, 28px);
+    opacity: 0.3;
+    animation: floatShuttle var(--duration, 14s) var(--delay, 0s) ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.25));
+}
+
+@keyframes floatShuttle {
+    0%   { opacity: 0.1; transform: translateY(105vh) translateX(0px) rotate(0deg) scale(0.7); }
+    10%  { opacity: 0.3; }
+    35%  { opacity: 0.4; }
+    60%  { opacity: 0.3; }
+    90%  { opacity: 0.15; }
+    100% { opacity: 0.05; transform: translateY(-10vh) translateX(var(--drift, 40px)) rotate(var(--spin, 360deg)) scale(1.1); }
+}
+
+/* ============================================
+   鼠标跟随羽毛
+   ============================================ */
+.mouse-feather {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9996;
+    font-size: 22px;
+    transition: opacity 0.4s ease;
+    animation: mouseFeatherFloat 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(240, 200, 100, 0.6));
+}
+
+@keyframes mouseFeatherFloat {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+    50% { transform: translate(-50%, -50%) rotate(5deg); }
+}
+
+/* 鼠标移入互动区域时加亮 */
+a:hover ~ .mouse-feather,
+button:hover ~ .mouse-feather,
+input:hover ~ .mouse-feather,
+select:hover ~ .mouse-feather,
+.racket-card:hover ~ .mouse-feather {
+    animation: mouseFeatherHover 0.4s ease-in-out infinite;
+}
+
+@keyframes mouseFeatherHover {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-10deg) scale(1.3); }
+    50% { transform: translate(-50%, -50%) rotate(10deg) scale(1.3); }
+}
+
+/* ============================================
+   页面顶部防诈骗重要提示
+   ============================================ */
 .fraud-warning {
     max-width: 1180px;
     margin: 18px auto 0;
@@ -74,6 +236,24 @@ body::before {
     box-shadow: 0 4px 14px rgba(196, 0, 0, 0.12);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.fraud-warning::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 14px;
+    background: linear-gradient(45deg, #e11d48, transparent, #e11d48, transparent);
+    z-index: -1;
+    animation: warningGlow 4s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes warningGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .fraud-warning strong {
@@ -92,25 +272,12 @@ body::before {
 }
 
 @media (max-width: 1220px) {
-    .fraud-warning {
-        margin-right: 16px;
-        margin-left: 16px;
-    }
+    .fraud-warning { margin-right: 16px; margin-left: 16px; }
 }
-
 @media (max-width: 600px) {
-    .fraud-warning {
-        margin-top: 12px;
-        padding: 12px 14px;
-    }
-
-    .fraud-warning strong {
-        font-size: 16px;
-    }
-
-    .fraud-warning p {
-        font-size: 14px;
-    }
+    .fraud-warning { margin-top: 12px; padding: 12px 14px; }
+    .fraud-warning strong { font-size: 16px; }
+    .fraud-warning p { font-size: 14px; }
 }
 
 /* --- 顶部 --- */
@@ -135,6 +302,24 @@ body::before {
     pointer-events: none;
 }
 
+/* Header 中的羽毛球装饰线 */
+.header::after {
+    content: '— 🏸 — 🏸 — 🏸 — 🏸 — 🏸 —';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    opacity: 0.3;
+    font-size: 20px;
+    letter-spacing: 8px;
+    animation: headerShuttles 20s linear infinite;
+}
+
+@keyframes headerShuttles {
+    from { transform: translateX(0); }
+    to { transform: translateX(-200px); }
+}
+
 .header-inner {
     position: relative;
     z-index: 1;
@@ -151,6 +336,15 @@ body::before {
 .logo-icon {
     font-size: 48px;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    animation: racketBounce 2s ease-in-out infinite;
+}
+
+@keyframes racketBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    15% { transform: translateY(-8px) rotate(-5deg); }
+    30% { transform: translateY(0) rotate(0deg); }
+    45% { transform: translateY(-4px) rotate(3deg); }
+    60% { transform: translateY(0) rotate(0deg); }
 }
 
 .logo-text {
@@ -158,6 +352,17 @@ body::before {
     font-weight: 700;
     letter-spacing: 1px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    background: linear-gradient(90deg, #fff, #e0f2fe, #d1fae5, #fff);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .header-subtitle {
@@ -198,6 +403,20 @@ body::before {
     -webkit-backdrop-filter: blur(15px) saturate(135%);
     backdrop-filter: blur(15px) saturate(135%);
     transition: transform var(--transition), box-shadow var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Info卡片羽毛球角标 */
+.info-card::after {
+    content: '🏸';
+    position: absolute;
+    right: -5px;
+    bottom: -10px;
+    font-size: 60px;
+    opacity: 0.06;
+    transform: rotate(-15deg);
+    pointer-events: none;
 }
 
 .info-card:nth-child(2) {
@@ -205,9 +424,21 @@ body::before {
     background: linear-gradient(145deg, rgba(255, 246, 218, 0.64), rgba(255, 224, 170, 0.46));
 }
 
+.info-card:nth-child(2)::after {
+    content: '🎯';
+    font-size: 50px;
+    opacity: 0.08;
+}
+
 .info-card:nth-child(3) {
     border-top-color: var(--color-secondary);
     background: linear-gradient(145deg, rgba(225, 238, 255, 0.64), rgba(194, 218, 255, 0.46));
+}
+
+.info-card:nth-child(3)::after {
+    content: '🎨';
+    font-size: 50px;
+    opacity: 0.08;
 }
 
 .info-card:nth-child(4) {
@@ -227,6 +458,14 @@ body::before {
     padding: 18px 24px;
     border-top-color: #f59e0b;
     background: linear-gradient(145deg, rgba(255, 246, 218, 0.66), rgba(255, 224, 170, 0.48));
+}
+
+.top-price-card::after {
+    content: '💰';
+    font-size: 50px;
+    right: 10px;
+    bottom: -8px;
+    opacity: 0.08;
 }
 
 .top-price-card .price-table {
@@ -266,6 +505,12 @@ body::before {
     padding: 5px 0;
     font-size: 14px;
     color: #263d43;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.info-card ul li:hover {
+    transform: translateX(4px);
+    color: var(--color-primary-dark);
 }
 
 .info-card ul li strong {
@@ -287,18 +532,14 @@ body::before {
     font-weight: 600;
 }
 
-.price-table th:first-child {
-    border-radius: var(--radius-sm) 0 0 0;
-}
-
-.price-table th:last-child {
-    border-radius: 0 var(--radius-sm) 0 0;
-}
+.price-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.price-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
 
 .price-table td {
     padding: 7px 10px;
     border-bottom: 1px solid var(--color-border);
     color: #263d43;
+    transition: background 0.2s ease;
 }
 
 .price-table tr:hover td {
@@ -326,11 +567,12 @@ body::before {
     display: inline-block;
     box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     transition: transform var(--transition);
-    cursor: default;
+    cursor: pointer;
 }
 
 .swatch:hover {
-    transform: scale(1.2);
+    transform: scale(1.3) rotate(15deg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 
 /* --- 表单区域 --- */
@@ -347,6 +589,11 @@ body::before {
     border: 1px solid var(--color-border);
     -webkit-backdrop-filter: blur(16px) saturate(125%);
     backdrop-filter: blur(16px) saturate(125%);
+    transition: box-shadow 0.3s ease;
+}
+
+.form-section:hover {
+    box-shadow: 0 18px 48px rgba(20, 91, 75, 0.18);
 }
 
 .form-section::before {
@@ -357,6 +604,18 @@ body::before {
     left: 0;
     height: 5px;
     background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), #a855f7);
+}
+
+/* 表单羽毛球水印 */
+.form-section::after {
+    content: '🏸';
+    position: absolute;
+    right: -10px;
+    bottom: -30px;
+    font-size: 180px;
+    opacity: 0.03;
+    transform: rotate(-20deg);
+    pointer-events: none;
 }
 
 .form-title {
@@ -385,6 +644,7 @@ body::before {
     font-weight: 700;
 }
 
+/* 输入框羽毛球风格 */
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group input[type="date"],
@@ -397,9 +657,10 @@ body::before {
     font-size: 14px;
     color: var(--color-text);
     background: rgba(255, 255, 255, 0.82);
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
     box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+    position: relative;
 }
 
 .form-group input:focus,
@@ -407,8 +668,9 @@ body::before {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10), 0 0 20px rgba(26, 147, 111, 0.1);
     background: #ffffff;
+    transform: translateY(-1px);
 }
 
 .form-group input.error,
@@ -416,12 +678,21 @@ body::before {
 .form-group textarea.error {
     border-color: var(--color-error);
     background: #fffafa;
+    animation: inputShake 0.5s ease;
 }
 
 .form-group input.error:focus,
 .form-group select.error:focus,
 .form-group textarea.error:focus {
     box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+@keyframes inputShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
 }
 
 .hint {
@@ -455,13 +726,15 @@ body::before {
     padding: 10px 18px;
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-sm);
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
 }
 
 .radio-label:hover {
     border-color: var(--color-primary);
     background: var(--color-primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 147, 111, 0.1);
 }
 
 .radio-label input[type="radio"] {
@@ -476,6 +749,14 @@ body::before {
     background: var(--color-primary-light);
     color: var(--color-primary-dark);
     font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(26, 147, 111, 0.15);
+    animation: radioPop 0.3s ease;
+}
+
+@keyframes radioPop {
+    0% { transform: scale(0.95); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
 }
 
 /* 磅数输入 */
@@ -534,7 +815,7 @@ body::before {
 .tension-item input:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(26, 147, 111, 0.12);
+    box-shadow: 0 0 0 3px rgba(26, 147, 111, 0.12), 0 0 20px rgba(26, 147, 111, 0.08);
     background: #fff;
 }
 
@@ -563,6 +844,12 @@ body::before {
     border: 1.5px solid #69bca5;
     border-radius: var(--radius-sm);
     padding: 14px 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.address-box:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 20px rgba(26, 147, 111, 0.1);
 }
 
 .address-text {
@@ -584,7 +871,7 @@ body::before {
     gap: 16px;
 }
 
-/* 提交按钮 */
+/* 提交按钮 - 羽毛球主题 */
 .submit-btn {
     width: 100%;
     padding: 14px 24px;
@@ -596,11 +883,26 @@ body::before {
     font-weight: 600;
     cursor: pointer;
     letter-spacing: 2px;
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 7px 18px rgba(28, 118, 139, 0.28);
     margin-top: 8px;
     position: relative;
     overflow: hidden;
+}
+
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.submit-btn:hover::before {
+    left: 100%;
 }
 
 .submit-btn:hover {
@@ -609,13 +911,30 @@ body::before {
 }
 
 .submit-btn:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
 }
 
 .submit-btn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
     transform: none;
+}
+
+/* 提交按钮羽毛球图标 */
+.submit-btn::after {
+    content: '🏸';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover::after {
+    opacity: 1;
+    right: 20px;
 }
 
 .spinner {
@@ -645,6 +964,28 @@ body::before {
 .error-icon {
     font-size: 56px;
     margin-bottom: 16px;
+}
+
+.success-icon {
+    animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.error-icon {
+    animation: errorShake 0.6s ease;
+}
+
+@keyframes successPop {
+    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
 }
 
 .success-message h3 {
@@ -681,13 +1022,15 @@ body::before {
     border-radius: var(--radius-sm);
     font-size: 14px;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .new-order-btn:hover,
 .retry-btn:hover {
     background: var(--color-primary);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(26, 147, 111, 0.25);
 }
 
 .error-message .retry-btn {
@@ -714,6 +1057,12 @@ body.modal-open {
     padding: 18px;
     background: rgba(10, 28, 24, 0.62);
     backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-card {
@@ -724,6 +1073,30 @@ body.modal-open {
     background: #fff;
     border-radius: var(--radius-md);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.modal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), #f59e0b);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal-card h3 {
@@ -750,13 +1123,15 @@ body.modal-open {
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .choice-card:hover,
 .choice-card:has(input:checked) {
     border-color: var(--color-primary);
     background: var(--color-primary-light);
+    transform: translateX(4px);
+    box-shadow: 0 2px 12px rgba(26, 147, 111, 0.1);
 }
 
 .choice-card input {
@@ -776,6 +1151,21 @@ body.modal-open {
 
 .choice-card.recommended {
     border-left: 4px solid var(--color-primary);
+    position: relative;
+}
+
+.choice-card.recommended::after {
+    content: '🌟推荐';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    background: linear-gradient(135deg, #f59e0b, #e07b3a);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
 .stock-notice,
@@ -833,6 +1223,7 @@ body.modal-open {
     font: inherit;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .primary-btn {
@@ -841,15 +1232,32 @@ body.modal-open {
     color: #fff;
 }
 
+.primary-btn:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 147, 111, 0.25);
+}
+
 .secondary-btn {
     border: 1.5px solid var(--color-border);
     background: #fff;
     color: var(--color-text);
 }
 
+.secondary-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
 .primary-btn:disabled {
     opacity: 0.65;
     cursor: wait;
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+    transform: translateY(0) scale(0.97);
 }
 
 .order-number {
@@ -877,10 +1285,15 @@ body.modal-open {
     padding: 9px 12px;
     border-bottom: 1px solid var(--color-border);
     font-size: 13px;
+    transition: background 0.2s ease;
 }
 
 .review-row:last-child {
     border-bottom: 0;
+}
+
+.review-row:hover {
+    background: rgba(26, 147, 111, 0.04);
 }
 
 .review-row span {
@@ -920,7 +1333,18 @@ body.modal-open {
     opacity: 1;
 }
 
-/* 多球拍独立信息 */
+/* 护线管温馨小贴士 */
+.grommet-tip {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: rgba(232, 245, 240, 0.8);
+    border: 1px solid rgba(26, 147, 111, 0.25);
+    border-left: 4px solid var(--color-primary);
+    color: #2c5e4a;
+    font-size: 13px;
+    line-height: 1.7;
+}
 .racket-details-title {
     margin: 2px 0 10px;
     color: var(--color-secondary);
@@ -933,6 +1357,12 @@ body.modal-open {
     content: '✦';
     margin-right: 7px;
     color: #60a5fa;
+    animation: pulseStar 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseStar {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
 }
 
 .racket-details-container {
@@ -948,6 +1378,12 @@ body.modal-open {
     color: #527198;
     background: linear-gradient(135deg, #edf7ff, #e6f0ff 52%, #f1ebff);
     text-align: center;
+    animation: placeholderPulse 2s ease-in-out infinite;
+}
+
+@keyframes placeholderPulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
 }
 
 .racket-card {
@@ -956,6 +1392,30 @@ body.modal-open {
     border-radius: var(--radius-md);
     background: linear-gradient(145deg, #e9fbf4 0%, #edf5ff 48%, #faf2ff 100%);
     box-shadow: 0 5px 16px rgba(31, 114, 93, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.racket-card::before {
+    content: '🏸';
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 40px;
+    opacity: 0.08;
+    pointer-events: none;
+    animation: racketCardFloat 3s ease-in-out infinite;
+}
+
+@keyframes racketCardFloat {
+    0%, 100% { transform: rotate(-10deg) translateY(0); }
+    50% { transform: rotate(-5deg) translateY(-4px); }
+}
+
+.racket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(31, 114, 93, 0.14);
+    border-color: var(--color-primary);
 }
 
 .racket-card > h3 {
@@ -991,6 +1451,12 @@ body.modal-open {
 
 .review-racket {
     margin-top: 18px;
+    animation: reviewSlideIn 0.4s ease;
+}
+
+@keyframes reviewSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .review-racket h4 {
@@ -1033,6 +1499,12 @@ body.modal-open {
     background: rgba(255, 250, 240, 0.88);
     color: #5f4a1d;
     line-height: 1.75;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.racket-safety-notice:hover {
+    border-left-color: #f59e0b;
+    box-shadow: 0 2px 12px rgba(245, 158, 11, 0.1);
 }
 
 .racket-safety-notice strong {
@@ -1060,6 +1532,11 @@ body.modal-open {
     width: 180px;
     height: 180px;
     margin: 0 auto 8px;
+    transition: transform 0.3s ease;
+}
+
+.booking-qrcode-section img:hover {
+    transform: scale(1.05);
 }
 
 .booking-qrcode-section p {
@@ -1076,89 +1553,107 @@ body.modal-open {
     line-height: 1.5;
 }
 
-/* --- 响应式 --- */
+/* ============================================
+   羽毛球网线装饰 (背景纹理)
+   ============================================ */
+/* 在 body 上叠加淡入淡出的网线网格 */
+.nets-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.03;
+    background:
+        repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.3) 40px, rgba(255,255,255,0.3) 41px),
+        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.3) 40px, rgba(255,255,255,0.3) 41px);
+}
+
+/* 网线光泽扫描线 */
+.court-line-scan {
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 15%,
+        transparent 30%);
+    animation: courtScan 8s ease-in-out infinite;
+}
+
+@keyframes courtScan {
+    0%, 100% { transform: translateY(-100%); }
+    50% { transform: translateY(100%); }
+}
+
+/* ============================================
+   响应式
+   ============================================ */
 @media (max-width: 900px) {
     .container {
         grid-template-columns: 1fr;
     }
+    .info-sidebar { order: 2; }
+    .form-section { order: 1; padding: 24px 20px; }
+}
 
-    .info-sidebar {
-        order: 2;
+@media (max-width: 768px) {
+    /* 移动端保留背景粒子特效，增大粒子数量感和可见度 */
+    .bg-shuttlecock {
+        opacity: 0.35 !important;
+        animation-duration: calc(var(--duration, 12s) * 1.2) !important;
+    }
+    /* 网线纹理保留 */
+    .nets-overlay { opacity: 0.025; }
+    /* 扫描线减速 */
+    .court-line-scan { animation-duration: 18s; }
+
+    /* 关闭鼠标跟随 */
+    .mouse-feather { display: none !important; }
+    /* 关闭点击特效（JS已跳过，CSS兜底） */
+    .click-ripple, .click-feather, .click-star, .click-trail { display: none !important; }
+
+    /* 降低背景模糊性能消耗 */
+    .info-card, .form-section, .top-price-card {
+        -webkit-backdrop-filter: blur(8px) saturate(110%);
+        backdrop-filter: blur(8px) saturate(110%);
     }
 
-    .form-section {
-        order: 1;
-        padding: 24px 20px;
+    /* 缩小子弹窗推荐标签 */
+    .choice-card.recommended::after {
+        font-size: 10px; padding: 1px 6px; right: 6px;
     }
 }
 
 @media (max-width: 600px) {
-    .logo-text {
-        font-size: 17px;
-        letter-spacing: 0;
-    }
-
-    .logo-icon {
-        font-size: 34px;
-    }
-
-    .header-subtitle {
-        font-size: 13px;
-        letter-spacing: 2px;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .radio-group {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .form-section {
-        padding: 20px 16px;
-    }
-
-    .top-price-card {
-        width: calc(100% - 32px);
-        margin-top: 12px;
-        padding: 16px;
-    }
-
-    .modal-overlay {
-        padding: 10px;
-        align-items: flex-start;
-    }
-
-    .modal-card {
-        max-height: calc(100vh - 20px);
-        padding: 20px 15px;
-    }
-
+    .logo-text { font-size: 17px; letter-spacing: 0; }
+    .logo-icon { font-size: 34px; }
+    .header-subtitle { font-size: 13px; letter-spacing: 2px; }
+    .form-row { grid-template-columns: 1fr; }
+    .radio-group { flex-direction: column; gap: 10px; }
+    .form-section { padding: 20px 16px; }
+    .top-price-card { width: calc(100% - 32px); margin-top: 12px; padding: 16px; }
+    .modal-overlay { padding: 10px; align-items: flex-start; }
+    .modal-card { max-height: calc(100vh - 20px); padding: 20px 15px; }
     .modal-actions {
-        position: sticky;
-        bottom: -20px;
-        margin: 20px -15px -20px;
-        padding: 12px 15px;
-        background: #fff;
-        border-top: 1px solid var(--color-border);
+        position: sticky; bottom: -20px; margin: 20px -15px -20px;
+        padding: 12px 15px; background: #fff; border-top: 1px solid var(--color-border);
+    }
+    .modal-actions button { flex: 1; }
+    .review-row { grid-template-columns: 100px minmax(0, 1fr); gap: 8px; }
+    .racket-card { padding: 17px 13px; }
+    .racket-card .form-row { gap: 0; }
+    body { cursor: auto; }
+
+    /* 小屏幕：粒子更明显、更大 */
+    .bg-shuttlecock {
+        opacity: 0.4 !important;
+        font-size: calc(var(--size, 28px) * 0.85) !important;
     }
 
-    .modal-actions button {
-        flex: 1;
+    /* 适配弹窗推荐标签 */
+    .choice-card.recommended::after {
+        position: static; transform: none; margin-left: 4px; display: inline-block;
     }
-
-    .review-row {
-        grid-template-columns: 100px minmax(0, 1fr);
-        gap: 8px;
-    }
-
-    .racket-card {
-        padding: 17px 13px;
-    }
-
-    .racket-card .form-row {
-        gap: 0;
-    }
-}
+    .choice-card.recommended { display: flex; flex-wrap: wrap; }
+}"

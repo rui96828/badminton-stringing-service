@@ -1,10 +1,14 @@
 /**
- * 羽毛球穿线服务预约 - 前端脚本
+ * 羽毛球穿线服务预约 - 前端脚本 (华丽版)
+ * 包含：预约表单逻辑 + 羽毛球粒子系统 + 点击特效 + 鼠标跟踪
  */
 
 (function () {
     'use strict';
 
+    // ============================================
+    // 预约表单逻辑
+    // ============================================
     const WEB3FORMS_ACCESS_KEY = '1b796361-dea0-4063-8009-8dafc14ed7f6';
     const LABOR_PRICE = 20;
     const STRING_OPTIONS = {
@@ -20,18 +24,8 @@
         full: { name: '更换全套', price: 12 },
     };
     const COLOR_OPTIONS = [
-        '白色',
-        '黄色',
-        '橙色',
-        '红色',
-        '绿色',
-        '蓝色',
-        '紫色',
-        '黑色',
-        '粉色',
-        '其他（请在备注中说明）',
-        '白色（固定）',
-        '随机搭配（以现货为准）',
+        '白色', '黄色', '橙色', '红色', '绿色', '蓝色', '紫色', '黑色', '粉色',
+        '其他（请在备注中说明）', '白色（固定）', '随机搭配（以现货为准）',
     ];
 
     const form = document.getElementById('bookingForm');
@@ -59,59 +53,35 @@
     let pendingOrder = null;
 
     const validators = {
-        name: {
-            validate: (value) => value.trim().length >= 2,
-            message: '请输入至少 2 个字的姓名',
-        },
-        contact: {
-            validate: (value) => value.trim().length > 0,
-            message: '联系方式为必填项，请输入手机号/微信号/QQ号',
-        },
-        racketCount: {
-            validate: (value) => Number.isInteger(Number(value)) && Number(value) >= 1,
-            message: '请选择穿线拍数',
-        },
-        dropoffDate: {
-            validate: (value) => value !== '',
-            message: '请选择送拍日期',
-        },
-        dropoffTime: {
-            validate: (value) => value !== '',
-            message: '请选择送拍时间',
-        },
-        pickupDate: {
-            validate: (value) => value !== '',
-            message: '请选择取拍日期',
-        },
-        pickupTime: {
-            validate: (value) => value !== '',
-            message: '请选择取拍时间',
-        },
+        name: { validate: (v) => v.trim().length >= 2, message: '请输入至少 2 个字的姓名' },
+        contact: { validate: (v) => v.trim().length > 0, message: '联系方式为必填项，请输入手机号/微信号/QQ号' },
+        racketCount: { validate: (v) => Number.isInteger(Number(v)) && Number(v) >= 1, message: '请选择穿线拍数' },
+        dropoffDate: { validate: (v) => v !== '', message: '请选择送拍日期' },
+        dropoffTime: { validate: (v) => v !== '', message: '请选择送拍时间' },
+        pickupDate: { validate: (v) => v !== '', message: '请选择取拍日期' },
+        pickupTime: { validate: (v) => v !== '', message: '请选择取拍时间' },
     };
 
     Object.keys(validators).forEach((fieldName) => {
-        const element = document.getElementById(fieldName);
-        element.addEventListener('blur', () => validateField(fieldName));
-        element.addEventListener('change', () => validateField(fieldName));
-        element.addEventListener('input', () => {
-            const errorElement = document.querySelector(`.error-msg[data-for="${fieldName}"]`);
-            if (errorElement && errorElement.textContent) validateField(fieldName);
+        const el = document.getElementById(fieldName);
+        el.addEventListener('blur', () => validateField(fieldName));
+        el.addEventListener('change', () => validateField(fieldName));
+        el.addEventListener('input', () => {
+            const errEl = document.querySelector(`.error-msg[data-for="${fieldName}"]`);
+            if (errEl && errEl.textContent) validateField(fieldName);
         });
     });
 
-    ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime'].forEach((fieldName) => {
-        document.getElementById(fieldName).addEventListener('change', () => {
-            if (fieldName === 'dropoffDate') updateDropoffTimeOptions();
-            if (fieldName !== 'pickupTime') updatePickupTimeOptions();
-
-            const allSelected = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
-                .every((name) => document.getElementById(name).value);
-            if (!allSelected) return;
-
-            const pickupTimeElement = document.getElementById('pickupTime');
-            const errorElement = document.querySelector('.error-msg[data-for="pickupTime"]');
-            errorElement.textContent = '';
-            pickupTimeElement.classList.remove('error');
+    ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime'].forEach((fn) => {
+        document.getElementById(fn).addEventListener('change', () => {
+            if (fn === 'dropoffDate') updateDropoffTimeOptions();
+            if (fn !== 'pickupTime') updatePickupTimeOptions();
+            const allSel = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
+                .every((n) => document.getElementById(n).value);
+            if (!allSel) return;
+            const pt = document.getElementById('pickupTime');
+            document.querySelector('.error-msg[data-for="pickupTime"]').textContent = '';
+            pt.classList.remove('error');
             validatePickupInterval();
         });
     });
@@ -129,10 +99,8 @@
             }
             return;
         }
-
         const card = sourceRadio.closest('.racket-card');
         clearCardError(card, 'stringSource');
-
         if (sourceRadio.value === 'provided') {
             openStringModal(Number(card.dataset.index));
         } else {
@@ -150,31 +118,21 @@
 
     confirmStringChoice.addEventListener('click', () => {
         const selected = document.querySelector('input[name="providedString"]:checked');
-        if (!selected) {
-            stringModalError.textContent = '请选择一种球线。';
-            return;
-        }
-
+        if (!selected) { stringModalError.textContent = '请选择一种球线。'; return; }
         const card = getRacketCard(activeRacketIndex);
         if (!card) return;
-
         const option = STRING_OPTIONS[selected.value];
         card.dataset.providedString = selected.value;
         const modelInput = card.querySelector('[data-field="stringModel"]');
         const colorSelect = card.querySelector('[data-field="stringColor"]');
-        const modelHint = card.querySelector('[data-role="string-model-hint"]');
-        const colorHint = card.querySelector('[data-role="string-color-hint"]');
-
         modelInput.value = option.name;
         modelInput.readOnly = true;
         colorSelect.value = option.color;
         colorSelect.disabled = true;
-        modelHint.textContent = `已选择 ${option.name}，¥${option.price} / 条。`;
-        colorHint.textContent =
-            selected.value === 'vbs66n'
-                ? '胜利 VBS66N 仅提供白色。'
-                : '颜色将根据球拍样式和现货随机协调搭配。';
-
+        card.querySelector('[data-role="string-model-hint"]').textContent =
+            `已选择 ${option.name}，¥${option.price} / 条。`;
+        card.querySelector('[data-role="string-color-hint"]').textContent =
+            selected.value === 'vbs66n' ? '胜利 VBS66N 仅提供白色。' : '颜色将根据球拍样式和现货随机协调搭配。';
         clearCardError(card, 'stringModel');
         clearCardError(card, 'stringColor');
         stringModalError.textContent = '';
@@ -185,186 +143,67 @@
     cancelStringChoice.addEventListener('click', () => {
         const card = getRacketCard(activeRacketIndex);
         if (card && !card.dataset.providedString) {
-            const providedRadio = card.querySelector(
-                'input[data-role="string-source"][value="provided"]'
-            );
-            providedRadio.checked = false;
+            card.querySelector('input[data-role="string-source"][value="provided"]').checked = false;
         }
         stringModalError.textContent = '';
         closeModal(stringModal);
         activeRacketIndex = null;
     });
 
-    editOrderBtn.addEventListener('click', () => {
-        closeModal(orderReviewModal);
-        pendingOrder = null;
-    });
-
+    editOrderBtn.addEventListener('click', () => { closeModal(orderReviewModal); pendingOrder = null; });
     confirmSubmitBtn.addEventListener('click', submitConfirmedOrder);
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         clearAllErrors();
-
         let isValid = true;
-        Object.keys(validators).forEach((fieldName) => {
-            if (!validateField(fieldName)) isValid = false;
-        });
-
+        Object.keys(validators).forEach((fn) => { if (!validateField(fn)) isValid = false; });
         if (!validateRacketCards()) isValid = false;
-
         if (!validateDropoffFuture()) isValid = false;
         if (!validatePickupInterval()) isValid = false;
-
         if (!isValid) {
             const firstError = form.querySelector('.error');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                firstError.focus();
-            }
+            if (firstError) { firstError.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstError.focus(); }
             return;
         }
-
         pendingOrder = buildOrderData();
         renderOrderReview(pendingOrder);
         openModal(orderReviewModal);
     });
 
     function renderRacketCards(count) {
-        if (!count) {
-            racketDetailsContainer.innerHTML =
-                '<div class="racket-placeholder">请先选择穿线拍数</div>';
-            return;
-        }
-
-        racketDetailsContainer.innerHTML = Array.from({ length: count }, (_, index) =>
-            racketCardTemplate(index)
-        ).join('');
+        if (!count) { racketDetailsContainer.innerHTML = '<div class="racket-placeholder">请先选择穿线拍数</div>'; return; }
+        racketDetailsContainer.innerHTML = Array.from({ length: count }, (_, i) => racketCardTemplate(i)).join('');
     }
 
     function racketCardTemplate(index) {
-        const number = index + 1;
-        const colorOptions = COLOR_OPTIONS.map(
-            (color) => `<option value="${escapeHtml(color)}">${escapeHtml(color)}</option>`
-        ).join('');
-
-        return `
-            <section class="racket-card" data-index="${index}">
-                <h3>🏸 第 ${number} 支球拍</h3>
-
-                <div class="form-group">
-                    <label>球拍品牌/型号 <span class="required">*</span></label>
-                    <input type="text" data-field="racketModel"
-                           placeholder="如：YONEX 天斧100ZZ、李宁 风刃900">
-                    <span class="racket-error" data-error-for="racketModel"></span>
-                </div>
-
-                <div class="form-group">
-                    <label>球线来源 <span class="required">*</span></label>
-                    <div class="radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="stringSource_${index}" value="self"
-                                   data-role="string-source">
-                            自带球线
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="stringSource_${index}" value="provided"
-                                   data-role="string-source">
-                            需要提供球线
-                        </label>
-                    </div>
-                    <span class="racket-error" data-error-for="stringSource"></span>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>球线品牌/型号 <span class="required">*</span></label>
-                        <input type="text" data-field="stringModel" placeholder="请先选择球线来源">
-                        <span class="racket-error" data-error-for="stringModel"></span>
-                        <small class="hint" data-role="string-model-hint">自带线请填写型号；需要提供请在弹窗选择。</small>
-                    </div>
-                    <div class="form-group">
-                        <label>球线颜色 <span class="required">*</span></label>
-                        <select data-field="stringColor">
-                            <option value="">请选择颜色</option>
-                            ${colorOptions}
-                        </select>
-                        <span class="racket-error" data-error-for="stringColor"></span>
-                        <small class="hint" data-role="string-color-hint">自带球线必须选择颜色。</small>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>是否需要更换护线管 <span class="required">*</span></label>
-                    <div class="radio-group grommet-options">
-                        <label class="radio-label">
-                            <input type="radio" name="grommet_${index}" value="none"
-                                   data-field="grommet">不需要
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="grommet_${index}" value="partial"
-                                   data-field="grommet">局部 +¥3
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="grommet_${index}" value="half"
-                                   data-field="grommet">一半 +¥7
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="grommet_${index}" value="full"
-                                   data-field="grommet">全套 +¥12
-                        </label>
-                    </div>
-                    <span class="racket-error" data-error-for="grommet"></span>
-                </div>
-
-                <div class="form-group">
-                    <label>穿线磅数 (lbs) <span class="required">*</span></label>
-                    <div class="tension-dual-row">
-                        <div class="tension-item">
-                            <span class="tension-label">横线</span>
-                            <input type="number" data-field="tensionHorizontal"
-                                   placeholder="如：25" min="16" max="35" step="0.5">
-                            <span class="tension-suffix">lbs</span>
-                        </div>
-                        <span class="tension-sep">×</span>
-                        <div class="tension-item">
-                            <span class="tension-label">竖线</span>
-                            <input type="number" data-field="tensionVertical"
-                                   placeholder="如：24" min="16" max="35" step="0.5">
-                            <span class="tension-suffix">lbs</span>
-                        </div>
-                    </div>
-                    <span class="racket-error" data-error-for="tension"></span>
-                    <small class="hint">建议范围 20-30 磅，横线通常比竖线高 1-2 磅。</small>
-                </div>
-            </section>
-        `;
+        const num = index + 1;
+        const colorOpts = COLOR_OPTIONS.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+        return `<section class="racket-card" data-index="${index}">
+            <h3>🏸 第 ${num} 支球拍</h3>
+            <div class="form-group"><label>球拍品牌/型号 <span class="required">*</span></label><input type="text" data-field="racketModel" placeholder="如：YONEX 天斧100ZZ、李宁 风刃900"><span class="racket-error" data-error-for="racketModel"></span></div>
+            <div class="form-group"><label>球线来源 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="stringSource_${index}" value="self" data-role="string-source">自带球线</label><label class="radio-label"><input type="radio" name="stringSource_${index}" value="provided" data-role="string-source">需要提供球线</label></div><span class="racket-error" data-error-for="stringSource"></span></div>
+            <div class="form-row"><div class="form-group"><label>球线品牌/型号 <span class="required">*</span></label><input type="text" data-field="stringModel" placeholder="请先选择球线来源"><span class="racket-error" data-error-for="stringModel"></span><small class="hint" data-role="string-model-hint">自带线请填写型号；需要提供请在弹窗选择。</small></div><div class="form-group"><label>球线颜色 <span class="required">*</span></label><select data-field="stringColor"><option value="">请选择颜色</option>${colorOpts}</select><span class="racket-error" data-error-for="stringColor"></span><small class="hint" data-role="string-color-hint">自带球线必须选择颜色。</small></div></div>
+            <div class="form-group"><label>是否需要更换护线管 <span class="required">*</span></label><div class="radio-group grommet-options"><label class="radio-label"><input type="radio" name="grommet_${index}" value="none" data-field="grommet">不需要</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="partial" data-field="grommet">局部 +¥3</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="half" data-field="grommet">一半 +¥7</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="full" data-field="grommet">全套 +¥12</label></div><span class="racket-error" data-error-for="grommet"></span><div class="grommet-tip">💡 <strong>温馨小贴士：</strong>建议您勤换护线管（全新的单线孔护线管一般可以使用3-4次，双线孔护线管一般可以使用2-3次），勤换护线管可以有效防止您的爱拍塌陷，从而有效地防止您的拍子意外断裂。</div></div>
+            <div class="form-group"><label>穿线磅数 (lbs) <span class="required">*</span></label><div class="tension-dual-row"><div class="tension-item"><span class="tension-label">横线</span><input type="number" data-field="tensionHorizontal" placeholder="如：25" min="16" max="35" step="0.5"><span class="tension-suffix">lbs</span></div><span class="tension-sep">×</span><div class="tension-item"><span class="tension-label">竖线</span><input type="number" data-field="tensionVertical" placeholder="如：24" min="16" max="35" step="0.5"><span class="tension-suffix">lbs</span></div></div><span class="racket-error" data-error-for="tension"></span><small class="hint">建议范围 20-30 磅，横线通常比竖线高 1-2 磅。</small></div>
+        </section>`;
     }
 
     function resetCardForOwnString(card) {
         delete card.dataset.providedString;
-        const modelInput = card.querySelector('[data-field="stringModel"]');
-        const colorSelect = card.querySelector('[data-field="stringColor"]');
-
-        modelInput.readOnly = false;
-        modelInput.value = '';
-        modelInput.placeholder = '如：YONEX BG80、胜利 VBS63';
-        colorSelect.disabled = false;
-        colorSelect.value = '';
-        card.querySelector('[data-role="string-model-hint"]').textContent =
-            '自带球线必须填写品牌与型号。';
-        card.querySelector('[data-role="string-color-hint"]').textContent =
-            '自带球线必须选择颜色。';
+        const mi = card.querySelector('[data-field="stringModel"]');
+        const cs = card.querySelector('[data-field="stringColor"]');
+        mi.readOnly = false; mi.value = ''; mi.placeholder = '如：YONEX BG80、胜利 VBS63';
+        cs.disabled = false; cs.value = '';
+        card.querySelector('[data-role="string-model-hint"]').textContent = '自带球线必须填写品牌与型号。';
+        card.querySelector('[data-role="string-color-hint"]').textContent = '自带球线必须选择颜色。';
     }
 
     function openStringModal(index) {
         activeRacketIndex = index;
         const card = getRacketCard(index);
-        const savedValue = card.dataset.providedString || '';
-
-        document.querySelectorAll('input[name="providedString"]').forEach((radio) => {
-            radio.checked = radio.value === savedValue;
-        });
+        const sv = card.dataset.providedString || '';
+        document.querySelectorAll('input[name="providedString"]').forEach(r => { r.checked = r.value === sv; });
         stringModalError.textContent = '';
         openModal(stringModal);
     }
@@ -372,124 +211,76 @@
     function validateRacketCards() {
         const cards = [...racketDetailsContainer.querySelectorAll('.racket-card')];
         if (!cards.length) return false;
-
         let allValid = true;
-        cards.forEach((card) => {
-            const requiredTextFields = ['racketModel', 'stringModel', 'stringColor'];
-            requiredTextFields.forEach((field) => {
-                const input = card.querySelector(`[data-field="${field}"]`);
-                const valid = input.value.trim() !== '';
-                if (!valid) {
+        cards.forEach(card => {
+            ['racketModel', 'stringModel', 'stringColor'].forEach(field => {
+                const inp = card.querySelector(`[data-field="${field}"]`);
+                if (inp.value.trim() === '') {
                     allValid = false;
-                    setCardError(
-                        card,
-                        field,
-                        field === 'racketModel'
-                            ? '请填写这支球拍的品牌与型号'
-                            : field === 'stringModel'
-                              ? '请填写或选择球线型号'
-                              : '请选择或确认球线颜色'
-                    );
-                    input.classList.add('error');
+                    const msgs = { racketModel: '请填写这支球拍的品牌与型号', stringModel: '请填写或选择球线型号', stringColor: '请选择或确认球线颜色' };
+                    setCardError(card, field, msgs[field]); inp.classList.add('error');
                 }
             });
-
-            const source = card.querySelector('input[data-role="string-source"]:checked');
-            if (!source) {
-                allValid = false;
-                setCardError(card, 'stringSource', '请选择这支球拍的球线来源');
-                card.querySelectorAll('input[data-role="string-source"]').forEach((radio) => {
-                    radio.classList.add('error');
-                });
-            } else if (source.value === 'provided' && !card.dataset.providedString) {
-                allValid = false;
-                setCardError(card, 'stringSource', '请在弹窗中选择需要提供的球线');
+            const src = card.querySelector('input[data-role="string-source"]:checked');
+            if (!src) {
+                allValid = false; setCardError(card, 'stringSource', '请选择这支球拍的球线来源');
+                card.querySelectorAll('input[data-role="string-source"]').forEach(r => r.classList.add('error'));
+            } else if (src.value === 'provided' && !card.dataset.providedString) {
+                allValid = false; setCardError(card, 'stringSource', '请在弹窗中选择需要提供的球线');
             }
-
-            const grommet = card.querySelector('input[data-field="grommet"]:checked');
-            if (!grommet) {
-                allValid = false;
-                setCardError(card, 'grommet', '请选择这支球拍是否更换护线管');
-                card.querySelectorAll('input[data-field="grommet"]').forEach((radio) => {
-                    radio.classList.add('error');
-                });
+            const grom = card.querySelector('input[data-field="grommet"]:checked');
+            if (!grom) {
+                allValid = false; setCardError(card, 'grommet', '请选择这支球拍是否更换护线管');
+                card.querySelectorAll('input[data-field="grommet"]').forEach(r => r.classList.add('error'));
             }
-
-            const horizontal = card.querySelector('[data-field="tensionHorizontal"]');
-            const vertical = card.querySelector('[data-field="tensionVertical"]');
-            const horizontalValue = Number(horizontal.value);
-            const verticalValue = Number(vertical.value);
-            if (
-                !horizontal.value ||
-                !vertical.value ||
-                horizontalValue < 16 ||
-                horizontalValue > 35 ||
-                verticalValue < 16 ||
-                verticalValue > 35
-            ) {
-                allValid = false;
-                setCardError(card, 'tension', '横线和竖线磅数均须填写 16-35 之间的数值');
-                if (!horizontal.value || horizontalValue < 16 || horizontalValue > 35) {
-                    horizontal.classList.add('error');
-                }
-                if (!vertical.value || verticalValue < 16 || verticalValue > 35) {
-                    vertical.classList.add('error');
-                }
+            const hz = card.querySelector('[data-field="tensionHorizontal"]');
+            const vt = card.querySelector('[data-field="tensionVertical"]');
+            const hv = Number(hz.value), vv = Number(vt.value);
+            if (!hz.value || !vt.value || hv < 16 || hv > 35 || vv < 16 || vv > 35) {
+                allValid = false; setCardError(card, 'tension', '横线和竖线磅数均须填写 16-35 之间的数值');
+                if (!hz.value || hv < 16 || hv > 35) hz.classList.add('error');
+                if (!vt.value || vv < 16 || vv > 35) vt.classList.add('error');
             }
         });
-
         return allValid;
     }
 
     function buildOrderData() {
-        const rackets = [...racketDetailsContainer.querySelectorAll('.racket-card')].map(
-            (card, index) => {
-                const source = card.querySelector('input[data-role="string-source"]:checked');
-                const grommetValue = card.querySelector(
-                    'input[data-field="grommet"]:checked'
-                ).value;
-                const grommet = GROMMET_OPTIONS[grommetValue];
-                const suppliedString =
-                    source.value === 'provided'
-                        ? STRING_OPTIONS[card.dataset.providedString]
-                        : null;
-                const stringPrice = suppliedString ? suppliedString.price : 0;
-
-                return {
-                    number: index + 1,
-                    racketModel: card.querySelector('[data-field="racketModel"]').value.trim(),
-                    stringSource: source.value === 'self' ? '自带球线' : '需要提供球线',
-                    stringModel: card.querySelector('[data-field="stringModel"]').value.trim(),
-                    stringColor: card.querySelector('[data-field="stringColor"]').value,
-                    stringPrice,
-                    grommetReplace: grommet.name,
-                    grommetPrice: grommet.price,
-                    tensionHorizontal: `${card.querySelector('[data-field="tensionHorizontal"]').value} lbs`,
-                    tensionVertical: `${card.querySelector('[data-field="tensionVertical"]').value} lbs`,
-                    laborPrice: LABOR_PRICE,
-                    subtotal: LABOR_PRICE + grommet.price + stringPrice,
-                };
-            }
-        );
-
+        const rackets = [...racketDetailsContainer.querySelectorAll('.racket-card')].map((card, i) => {
+            const src = card.querySelector('input[data-role="string-source"]:checked');
+            const gv = card.querySelector('input[data-field="grommet"]:checked').value;
+            const grommet = GROMMET_OPTIONS[gv];
+            const suppliedString = src.value === 'provided' ? STRING_OPTIONS[card.dataset.providedString] : null;
+            const sp = suppliedString ? suppliedString.price : 0;
+            return {
+                number: i + 1,
+                racketModel: card.querySelector('[data-field="racketModel"]').value.trim(),
+                stringSource: src.value === 'self' ? '自带球线' : '需要提供球线',
+                stringModel: card.querySelector('[data-field="stringModel"]').value.trim(),
+                stringColor: card.querySelector('[data-field="stringColor"]').value,
+                stringPrice: sp,
+                grommetReplace: grommet.name,
+                grommetPrice: grommet.price,
+                tensionHorizontal: `${card.querySelector('[data-field="tensionHorizontal"]').value} lbs`,
+                tensionVertical: `${card.querySelector('[data-field="tensionVertical"]').value} lbs`,
+                laborPrice: LABOR_PRICE,
+                subtotal: LABOR_PRICE + grommet.price + sp,
+            };
+        });
         const laborTotal = LABOR_PRICE * rackets.length;
-        const grommetTotal = rackets.reduce((sum, racket) => sum + racket.grommetPrice, 0);
-        const stringTotal = rackets.reduce((sum, racket) => sum + racket.stringPrice, 0);
-
+        const grommetTotal = rackets.reduce((s, r) => s + r.grommetPrice, 0);
+        const stringTotal = rackets.reduce((s, r) => s + r.stringPrice, 0);
         return {
             orderNumber: generateOrderNumber(),
             name: document.getElementById('name').value.trim(),
             contact: document.getElementById('contact').value.trim(),
-            racketCount: rackets.length,
-            rackets,
+            racketCount: rackets.length, rackets,
             dropoffDate: document.getElementById('dropoffDate').value,
             dropoffTime: document.getElementById('dropoffTime').value || '未指定',
             pickupDate: document.getElementById('pickupDate').value,
             pickupTime: document.getElementById('pickupTime').value || '未指定',
             notes: document.getElementById('notes').value.trim() || '无',
-            laborTotal,
-            grommetTotal,
-            stringTotal,
+            laborTotal, grommetTotal, stringTotal,
             totalAmount: laborTotal + grommetTotal + stringTotal,
             paymentMethod: '取拍时当面结清',
             orderTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
@@ -497,362 +288,180 @@
     }
 
     function renderOrderReview(order) {
-        const racketSections = order.rackets
-            .map(
-                (racket) => `
-                    <div class="review-racket">
-                        <h4>第 ${racket.number} 支球拍 · 小计 ¥${racket.subtotal}</h4>
-                        ${reviewRows([
-                            ['球拍型号', racket.racketModel],
-                            ['球线来源', racket.stringSource],
-                            ['球线型号', racket.stringModel],
-                            ['球线颜色', racket.stringColor],
-                            [
-                                '穿线磅数',
-                                `横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`,
-                            ],
-                            ['护线管', racket.grommetReplace],
-                            [
-                                '本拍费用',
-                                `手工 ¥${racket.laborPrice} + 护线管 ¥${racket.grommetPrice} + 球线 ¥${racket.stringPrice}`,
-                            ],
-                        ])}
-                    </div>
-                `
-            )
-            .join('');
-
-        orderReviewContent.innerHTML = `
-            <div class="order-number">订单号：${escapeHtml(order.orderNumber)}</div>
-            <div class="review-section">
-                ${reviewRows([
-                    ['客户姓名', order.name],
-                    ['联系方式', order.contact],
-                    ['球拍数量', `${order.racketCount} 支`],
-                    ['送拍时间', `${order.dropoffDate} ${order.dropoffTime}`],
-                    ['取拍时间', `${order.pickupDate} ${order.pickupTime}`],
-                    ['备注', order.notes],
-                ])}
-            </div>
+        const racketSections = order.rackets.map(racket => `<div class="review-racket">
+            <h4>第 ${racket.number} 支球拍 · 小计 ¥${racket.subtotal}</h4>
+            ${reviewRows([['球拍型号', racket.racketModel], ['球线来源', racket.stringSource], ['球线型号', racket.stringModel], ['球线颜色', racket.stringColor], ['穿线磅数', `横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`], ['护线管', racket.grommetReplace], ['本拍费用', `手工 ¥${racket.laborPrice} + 护线管 ¥${racket.grommetPrice} + 球线 ¥${racket.stringPrice}`]])}
+        </div>`).join('');
+        orderReviewContent.innerHTML = `<div class="order-number">订单号：${escapeHtml(order.orderNumber)}</div>
+            <div class="review-section">${reviewRows([['客户姓名', order.name], ['联系方式', order.contact], ['球拍数量', `${order.racketCount} 支`], ['送拍时间', `${order.dropoffDate} ${order.dropoffTime}`], ['取拍时间', `${order.pickupDate} ${order.pickupTime}`], ['备注', order.notes]])}</div>
             ${racketSections}
             <h4>费用汇总</h4>
             <div class="review-section fee-section">
-                ${reviewRows([
-                    ['穿线手工费', `¥${order.laborTotal}`],
-                    ['护线管费用', `¥${order.grommetTotal}`],
-                    ['球线费用', `¥${order.stringTotal}`],
-                ])}
+                ${reviewRows([['穿线手工费', `¥${order.laborTotal}`], ['护线管费用', `¥${order.grommetTotal}`], ['球线费用', `¥${order.stringTotal}`]])}
                 <div class="review-row total-row"><span>总金额</span><strong>¥${order.totalAmount}</strong></div>
-            </div>
-        `;
+            </div>`;
     }
 
     function reviewRows(rows) {
-        return rows
-            .map(
-                ([label, value]) =>
-                    `<div class="review-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(
-                        String(value)
-                    )}</strong></div>`
-            )
-            .join('');
+        return rows.map(([l, v]) => `<div class="review-row"><span>${escapeHtml(l)}</span><strong>${escapeHtml(String(v))}</strong></div>`).join('');
     }
 
     async function submitConfirmedOrder() {
         if (!pendingOrder) return;
-
-        updateDropoffTimeOptions();
-        updatePickupTimeOptions();
-        const timeFieldsValid = ['dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime']
-            .every((fieldName) => validateField(fieldName));
-        if (
-            !timeFieldsValid ||
-            !validateDropoffFuture() ||
-            !validatePickupInterval()
-        ) {
-            closeModal(orderReviewModal);
-            pendingOrder = null;
-            const firstError = form.querySelector('.error');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                firstError.focus();
-            }
+        updateDropoffTimeOptions(); updatePickupTimeOptions();
+        if (!['dropoffDate','dropoffTime','pickupDate','pickupTime'].every(fn => validateField(fn)) || !validateDropoffFuture() || !validatePickupInterval()) {
+            closeModal(orderReviewModal); pendingOrder = null;
+            const fe = form.querySelector('.error');
+            if (fe) { fe.scrollIntoView({ behavior: 'smooth', block: 'center' }); fe.focus(); }
             return;
         }
-
-        confirmSubmitBtn.disabled = true;
-        confirmSubmitBtn.textContent = '提交中...';
-        setLoading(true);
-
+        confirmSubmitBtn.disabled = true; confirmSubmitBtn.textContent = '提交中...'; setLoading(true);
         const order = pendingOrder;
-        const racketText = order.rackets
-            .map(
-                (racket) => [
-                    `【第 ${racket.number} 支球拍】`,
-                    `球拍型号：${racket.racketModel}`,
-                    `球线来源：${racket.stringSource}`,
-                    `球线型号：${racket.stringModel}`,
-                    `球线颜色：${racket.stringColor}`,
-                    `穿线磅数：横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`,
-                    `护线管：${racket.grommetReplace}`,
-                    `本拍费用：手工 ¥${racket.laborPrice} + 护线管 ¥${racket.grommetPrice} + 球线 ¥${racket.stringPrice} = ¥${racket.subtotal}`,
-                ].join('\n')
-            )
-            .join('\n\n');
-
+        const racketText = order.rackets.map(r => [
+            `【第 ${r.number} 支球拍】`, `球拍型号：${r.racketModel}`, `球线来源：${r.stringSource}`,
+            `球线型号：${r.stringModel}`, `球线颜色：${r.stringColor}`,
+            `穿线磅数：横线 ${r.tensionHorizontal} / 竖线 ${r.tensionVertical}`,
+            `护线管：${r.grommetReplace}`,
+            `本拍费用：手工 ¥${r.laborPrice} + 护线管 ¥${r.grommetPrice} + 球线 ¥${r.stringPrice} = ¥${r.subtotal}`,
+        ].join('\n')).join('\n\n');
         const message = [
-            '🏸 羽毛球穿线预约订单',
-            `订单号码：${order.orderNumber}`,
-            '',
-            `下单时间：${order.orderTime}`,
-            `客户姓名：${order.name}`,
-            `联系方式：${order.contact}`,
-            `球拍数量：${order.racketCount} 支`,
-            '',
-            racketText,
-            '',
+            '🏸 羽毛球穿线预约订单', `订单号码：${order.orderNumber}`, '',
+            `下单时间：${order.orderTime}`, `客户姓名：${order.name}`, `联系方式：${order.contact}`,
+            `球拍数量：${order.racketCount} 支`, '', racketText, '',
             `送拍时间：${order.dropoffDate} ${order.dropoffTime}`,
-            `取拍时间：${order.pickupDate} ${order.pickupTime}`,
-            `备注：${order.notes}`,
-            '',
-            '【费用汇总】',
-            `穿线手工费：¥${order.laborTotal}`,
-            `护线管费用：¥${order.grommetTotal}`,
-            `球线费用：¥${order.stringTotal}`,
-            `总金额：¥${order.totalAmount}`,
+            `取拍时间：${order.pickupDate} ${order.pickupTime}`, `备注：${order.notes}`, '',
+            '【费用汇总】', `穿线手工费：¥${order.laborTotal}`, `护线管费用：¥${order.grommetTotal}`,
+            `球线费用：¥${order.stringTotal}`, `总金额：¥${order.totalAmount}`,
             `付款方式：${order.paymentMethod}`,
         ].join('\n');
-
         try {
-            const response = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    access_key: WEB3FORMS_ACCESS_KEY,
-                    subject: `🏸 穿线预约 ${order.orderNumber} - ${order.name}`,
-                    from_name: '羽毛球穿线预约系统',
-                    botcheck: '',
-                    message,
-                }),
+            const resp = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ access_key: WEB3FORMS_ACCESS_KEY, subject: `🏸 穿线预约 ${order.orderNumber} - ${order.name}`, from_name: '羽毛球穿线预约系统', botcheck: '', message }),
             });
-            const result = await response.json();
+            const result = await resp.json();
             if (!result.success) throw new Error(result.message || '发送失败，请稍后再试。');
-
-            closeModal(orderReviewModal);
-            showSuccess(order.orderNumber);
-            pendingOrder = null;
+            closeModal(orderReviewModal); showSuccess(order.orderNumber); pendingOrder = null;
         } catch (error) {
-            closeModal(orderReviewModal);
-            showError(error.message || '网络连接失败，请检查网络后重试。');
+            closeModal(orderReviewModal); showError(error.message || '网络连接失败，请检查网络后重试。');
         } finally {
-            confirmSubmitBtn.disabled = false;
-            confirmSubmitBtn.textContent = '确认提交预约';
-            setLoading(false);
+            confirmSubmitBtn.disabled = false; confirmSubmitBtn.textContent = '确认提交预约'; setLoading(false);
         }
     }
 
     function validateField(fieldName) {
-        const element = document.getElementById(fieldName);
-        const errorElement = document.querySelector(`.error-msg[data-for="${fieldName}"]`);
+        const el = document.getElementById(fieldName);
+        const errEl = document.querySelector(`.error-msg[data-for="${fieldName}"]`);
         const rule = validators[fieldName];
-        const valid = rule.validate(element.value);
-
-        element.classList.toggle('error', !valid);
-        errorElement.textContent = valid ? '' : rule.message;
+        const valid = rule.validate(el.value);
+        el.classList.toggle('error', !valid);
+        errEl.textContent = valid ? '' : rule.message;
         return valid;
     }
 
     function getSlotStart(date, timeRange) {
         if (!date || !timeRange) return null;
-        const [year, month, day] = date.split('-').map(Number);
-        const [hour, minute] = timeRange.split('-')[0].split(':').map(Number);
-        const timestamp = Date.UTC(year, month - 1, day, hour, minute);
-        return Number.isNaN(timestamp) ? null : timestamp;
+        const [y, m, d] = date.split('-').map(Number);
+        const [h, min] = timeRange.split('-')[0].split(':').map(Number);
+        const ts = Date.UTC(y, m - 1, d, h, min);
+        return Number.isNaN(ts) ? null : ts;
     }
 
     function getShanghaiNow() {
-        const parts = new Intl.DateTimeFormat('en-CA', {
-            timeZone: 'Asia/Shanghai',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hourCycle: 'h23',
-        }).formatToParts(new Date());
-        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-        const date = `${values.year}-${values.month}-${values.day}`;
-        const timestamp = Date.UTC(
-            Number(values.year),
-            Number(values.month) - 1,
-            Number(values.day),
-            Number(values.hour),
-            Number(values.minute)
-        );
-        return { date, timestamp };
+        const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+        const vals = Object.fromEntries(parts.map(p => [p.type, p.value]));
+        return { date: `${vals.year}-${vals.month}-${vals.day}`, timestamp: Date.UTC(Number(vals.year), Number(vals.month) - 1, Number(vals.day), Number(vals.hour), Number(vals.minute)) };
     }
 
     function updateDropoffTimeOptions() {
-        const dropoffDateElement = document.getElementById('dropoffDate');
-        const dropoffTimeElement = document.getElementById('dropoffTime');
-        const placeholder = dropoffTimeElement.options[0];
+        const dde = document.getElementById('dropoffDate');
+        const dte = document.getElementById('dropoffTime');
+        const ph = dte.options[0];
         const now = getShanghaiNow();
-
-        dropoffDateElement.min = now.date;
-        if (dropoffDateElement.value && dropoffDateElement.value < now.date) {
-            dropoffDateElement.value = '';
-        }
-
-        if (!dropoffDateElement.value) {
-            dropoffTimeElement.value = '';
-            dropoffTimeElement.disabled = true;
-            placeholder.textContent = '请选择';
-            Array.from(dropoffTimeElement.options).slice(1).forEach((option) => {
-                option.disabled = true;
-                option.hidden = true;
-            });
+        dde.min = now.date;
+        if (dde.value && dde.value < now.date) dde.value = '';
+        if (!dde.value) {
+            dte.value = ''; dte.disabled = true; ph.textContent = '请选择';
+            Array.from(dte.options).slice(1).forEach(o => { o.disabled = true; o.hidden = true; });
             return;
         }
-
-        let availableCount = 0;
-        Array.from(dropoffTimeElement.options).slice(1).forEach((option) => {
-            const slotStart = getSlotStart(dropoffDateElement.value, option.value);
-            const available = slotStart !== null && slotStart >= now.timestamp;
-            option.disabled = !available;
-            option.hidden = !available;
-            if (available) availableCount += 1;
+        let avail = 0;
+        Array.from(dte.options).slice(1).forEach(o => {
+            const ss = getSlotStart(dde.value, o.value);
+            const av = ss !== null && ss >= now.timestamp;
+            o.disabled = !av; o.hidden = !av; if (av) avail++;
         });
-
-        const selectedOption = dropoffTimeElement.selectedOptions[0];
-        if (selectedOption && selectedOption.value && selectedOption.disabled) {
-            dropoffTimeElement.value = '';
-        }
-
-        dropoffTimeElement.disabled = availableCount === 0;
-        placeholder.textContent = availableCount
-            ? '请选择'
-            : '无可选时间';
+        const sel = dte.selectedOptions[0];
+        if (sel && sel.value && sel.disabled) dte.value = '';
+        dte.disabled = avail === 0;
+        ph.textContent = avail ? '请选择' : '无可选时间';
     }
 
     function updatePickupTimeOptions() {
-        const dropoffDateElement = document.getElementById('dropoffDate');
-        const dropoffTimeElement = document.getElementById('dropoffTime');
-        const pickupDateElement = document.getElementById('pickupDate');
-        const pickupTimeElement = document.getElementById('pickupTime');
-        const placeholder = pickupTimeElement.options[0];
-
-        if (dropoffDateElement.value) {
-            pickupDateElement.min = dropoffDateElement.value;
-            if (
-                pickupDateElement.value &&
-                pickupDateElement.value < dropoffDateElement.value
-            ) {
-                pickupDateElement.value = '';
-            }
+        const dde = document.getElementById('dropoffDate');
+        const dte = document.getElementById('dropoffTime');
+        const pde = document.getElementById('pickupDate');
+        const pte = document.getElementById('pickupTime');
+        const ph = pte.options[0];
+        if (dde.value) {
+            pde.min = dde.value;
+            if (pde.value && pde.value < dde.value) pde.value = '';
         }
-
-        const dropoffStart = getSlotStart(
-            dropoffDateElement.value,
-            dropoffTimeElement.value
-        );
-        const pickupDate = pickupDateElement.value;
-
-        if (!dropoffStart || !pickupDate) {
-            pickupTimeElement.value = '';
-            pickupTimeElement.disabled = true;
-            placeholder.textContent = '请选择';
-            Array.from(pickupTimeElement.options).slice(1).forEach((option) => {
-                option.disabled = true;
-                option.hidden = true;
-            });
+        const dss = getSlotStart(dde.value, dte.value);
+        if (!dss || !pde.value) {
+            pte.value = ''; pte.disabled = true; ph.textContent = '请选择';
+            Array.from(pte.options).slice(1).forEach(o => { o.disabled = true; o.hidden = true; });
             return;
         }
-
-        const minimumPickupTime = dropoffStart + 2 * 60 * 60 * 1000;
-        let availableCount = 0;
-
-        Array.from(pickupTimeElement.options).slice(1).forEach((option) => {
-            const pickupStart = getSlotStart(pickupDate, option.value);
-            const available = pickupStart !== null && pickupStart >= minimumPickupTime;
-            option.disabled = !available;
-            option.hidden = !available;
-            if (available) availableCount += 1;
+        const minPk = dss + 2 * 60 * 60 * 1000;
+        let avail = 0;
+        Array.from(pte.options).slice(1).forEach(o => {
+            const ps = getSlotStart(pde.value, o.value);
+            const av = ps !== null && ps >= minPk;
+            o.disabled = !av; o.hidden = !av; if (av) avail++;
         });
-
-        const selectedOption = pickupTimeElement.selectedOptions[0];
-        if (selectedOption && selectedOption.value && selectedOption.disabled) {
-            pickupTimeElement.value = '';
-        }
-
-        pickupTimeElement.disabled = availableCount === 0;
-        placeholder.textContent = availableCount
-            ? '请选择'
-            : '无可选时间';
+        const sel = pte.selectedOptions[0];
+        if (sel && sel.value && sel.disabled) pte.value = '';
+        pte.disabled = avail === 0;
+        ph.textContent = avail ? '请选择' : '无可选时间';
     }
 
     function validatePickupInterval() {
-        const dropoffDateElement = document.getElementById('dropoffDate');
-        const dropoffTimeElement = document.getElementById('dropoffTime');
-        const pickupDateElement = document.getElementById('pickupDate');
-        const pickupTimeElement = document.getElementById('pickupTime');
-
-        const dropoffStart = getSlotStart(
-            dropoffDateElement.value,
-            dropoffTimeElement.value
-        );
-        const pickupStart = getSlotStart(
-            pickupDateElement.value,
-            pickupTimeElement.value
-        );
-
-        if (!dropoffStart || !pickupStart) return true;
-
-        const minimumIntervalMs = 2 * 60 * 60 * 1000;
-        const valid = pickupStart - dropoffStart >= minimumIntervalMs;
-        if (valid) return true;
-
-        const errorElement = document.querySelector('.error-msg[data-for="pickupTime"]');
-        errorElement.textContent = '取拍时间必须比送拍时间至少晚 2 小时';
-        pickupTimeElement.classList.add('error');
+        const dd = document.getElementById('dropoffDate'), dt = document.getElementById('dropoffTime');
+        const pd = document.getElementById('pickupDate'), pt = document.getElementById('pickupTime');
+        const ds = getSlotStart(dd.value, dt.value);
+        const ps = getSlotStart(pd.value, pt.value);
+        if (!ds || !ps) return true;
+        if (ps - ds >= 2 * 60 * 60 * 1000) return true;
+        const err = document.querySelector('.error-msg[data-for="pickupTime"]');
+        err.textContent = '取拍时间必须比送拍时间至少晚 2 小时';
+        pt.classList.add('error');
         return false;
     }
 
     function validateDropoffFuture() {
-        const dropoffDateElement = document.getElementById('dropoffDate');
-        const dropoffTimeElement = document.getElementById('dropoffTime');
-        const dropoffStart = getSlotStart(
-            dropoffDateElement.value,
-            dropoffTimeElement.value
-        );
-
-        if (!dropoffStart) return true;
-        if (dropoffStart >= getShanghaiNow().timestamp) return true;
-
-        const errorElement = document.querySelector('.error-msg[data-for="dropoffTime"]');
-        errorElement.textContent = '该送拍时间已经开始或已过去，请重新选择';
-        dropoffTimeElement.classList.add('error');
+        const dd = document.getElementById('dropoffDate'), dt = document.getElementById('dropoffTime');
+        const ds = getSlotStart(dd.value, dt.value);
+        if (!ds || ds >= getShanghaiNow().timestamp) return true;
+        const err = document.querySelector('.error-msg[data-for="dropoffTime"]');
+        err.textContent = '该送拍时间已经开始或已过去，请重新选择';
+        dt.classList.add('error');
         return false;
     }
 
-    function setCardError(card, field, message) {
-        const errorElement = card.querySelector(`[data-error-for="${field}"]`);
-        if (errorElement) errorElement.textContent = message;
+    function setCardError(card, field, msg) {
+        const err = card.querySelector(`[data-error-for="${field}"]`);
+        if (err) err.textContent = msg;
     }
 
     function clearCardError(card, field) {
         setCardError(card, field, '');
-        if (field === 'grommet') {
-            card.querySelectorAll('input[data-field="grommet"]').forEach((radio) => {
-                radio.classList.remove('error');
-            });
-        }
+        if (field === 'grommet') card.querySelectorAll('input[data-field="grommet"]').forEach(r => r.classList.remove('error'));
     }
 
     function clearAllErrors() {
-        form.querySelectorAll('.error').forEach((element) => element.classList.remove('error'));
-        form.querySelectorAll('.error-msg, .racket-error').forEach((element) => {
-            element.textContent = '';
-        });
+        form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+        form.querySelectorAll('.error-msg, .racket-error').forEach(el => el.textContent = '');
     }
 
     function getRacketCard(index) {
@@ -861,15 +470,9 @@
     }
 
     function generateOrderNumber() {
-        const parts = new Intl.DateTimeFormat('zh-CN', {
-            timeZone: 'Asia/Shanghai',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        }).formatToParts(new Date());
-        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-        const random = Math.floor(1000 + Math.random() * 9000);
-        return `${values.year}${values.month}${values.day}${random}`;
+        const parts = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+        const vals = Object.fromEntries(parts.map(p => [p.type, p.value]));
+        return `${vals.year}${vals.month}${vals.day}${Math.floor(1000 + Math.random() * 9000)}`;
     }
 
     function setLoading(loading) {
@@ -881,16 +484,14 @@
     function showSuccess(orderNumber) {
         form.style.display = 'none';
         successOrderNumber.textContent = `订单号：${orderNumber}`;
-        successMsg.style.display = 'block';
-        errorMsg.style.display = 'none';
+        successMsg.style.display = 'block'; errorMsg.style.display = 'none';
         successMsg.scrollIntoView({ behavior: 'smooth' });
     }
 
     function showError(message) {
         form.style.display = 'none';
         errorText.textContent = message;
-        errorMsg.style.display = 'block';
-        successMsg.style.display = 'none';
+        errorMsg.style.display = 'block'; successMsg.style.display = 'none';
         errorMsg.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -907,21 +508,181 @@
     }
 
     function escapeHtml(value) {
-        return String(value)
-            .replaceAll('&', '&amp;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;')
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", '&#039;');
+        return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
     }
 
     window.hideError = function () {
         form.style.display = 'block';
-        errorMsg.style.display = 'none';
-        successMsg.style.display = 'none';
+        errorMsg.style.display = 'none'; successMsg.style.display = 'none';
         setLoading(false);
     };
 
+    // ============================================
+    // 羽毛球粒子背景系统（全平台）
+    // ============================================
+    (function initBgShuttlecocks() {
+        const container = document.getElementById('bgShuttlecocks');
+        if (!container) return;
+
+        const icons = ['🏸', '🏸', '🏸', '🏸', '🏸', '🪶', '🪶', '🎯', '🏸', '🏸'];
+        var count = ('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 15 : 12;
+
+        for (var i = 0; i < count; i++) {
+            var el = document.createElement('span');
+            el.className = 'bg-shuttlecock';
+            el.textContent = icons[i % icons.length];
+            el.style.setProperty('--size', (18 + Math.random() * 40) + 'px');
+            el.style.setProperty('--duration', (12 + Math.random() * 16) + 's');
+            el.style.setProperty('--delay', (Math.random() * -15) + 's');
+            el.style.setProperty('--drift', ((Math.random() - 0.5) * 200) + 'px');
+            el.style.setProperty('--spin', (180 + Math.random() * 540) + 'deg');
+            el.style.left = (5 + Math.random() * 90) + '%';
+            container.appendChild(el);
+        }
+    })();
+
+    // ============================================
+    // 全局点击特效系统（仅桌面端）
+    // ============================================
+    (function initClickEffects() {
+        // 触屏设备跳过点击特效，只保留背景粒子
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
+        var rippleColors = ['#1a936f', '#2563eb', '#f4a261', '#a855f7', '#f59e0b'];
+        var featherIcons = ['🏸', '🪶', '🏸'];
+        var starChars = ['✦', '✧', '✨', '💫', '⭐'];
+
+        function addRipple(x, y) {
+            var r = document.createElement('div');
+            r.className = 'click-ripple';
+            var c = rippleColors[Math.floor(Math.random() * rippleColors.length)];
+            r.style.left = x + 'px';
+            r.style.top = y + 'px';
+            r.style.background = 'radial-gradient(circle, ' + c + '66, ' + c + '11, transparent 70%)';
+            document.body.appendChild(r);
+            setTimeout(function() { if (r.parentNode) r.remove(); }, 1500);
+        }
+
+        function addFeathers(x, y) {
+            var count = 3;
+            for (var i = 0; i < count; i++) {
+                var f = document.createElement('span');
+                f.className = 'click-feather';
+                f.textContent = featherIcons[i % featherIcons.length];
+                var angle = (Math.PI * 2 / count) * i;
+                var dist = 50 + Math.random() * 70;
+                f.style.left = x + 'px';
+                f.style.top = y + 'px';
+                f.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+                f.style.setProperty('--dy', (Math.sin(angle) * dist - 30) + 'px');
+                f.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+                f.style.fontSize = (20 + Math.random() * 16) + 'px';
+                f.style.animationDuration = (0.7 + Math.random() * 0.5) + 's';
+                document.body.appendChild(f);
+                f.addEventListener('animationend', function() { f.remove(); });
+            }
+        }
+
+        function addStars(x, y) {
+            var count = 5;
+            var colors = ['#f4a261', '#ffd700', '#60a5fa', '#a78bfa', '#f472b6'];
+            for (var i = 0; i < count; i++) {
+                var s = document.createElement('span');
+                s.className = 'click-star';
+                s.textContent = starChars[i % starChars.length];
+                var angle = (Math.PI * 2 / count) * i;
+                var dist = 30 + Math.random() * 60;
+                s.style.left = x + 'px';
+                s.style.top = y + 'px';
+                s.style.setProperty('--sx', (Math.cos(angle) * dist) + 'px');
+                s.style.setProperty('--sy', (Math.sin(angle) * dist) + 'px');
+                s.style.fontSize = (12 + Math.random() * 14) + 'px';
+                s.style.color = colors[i % colors.length];
+                document.body.appendChild(s);
+                s.addEventListener('animationend', function() { s.remove(); });
+            }
+        }
+
+        var lastFire = 0;
+        document.addEventListener('click', function(e) {
+            var now = Date.now();
+            if (now - lastFire < 150) return;
+            lastFire = now;
+            addRipple(e.clientX, e.clientY);
+            addFeathers(e.clientX, e.clientY);
+            addStars(e.clientX, e.clientY);
+        });
+    })();
+
+    // ============================================
+    // 鼠标跟随羽毛（仅桌面端）
+    // ============================================
+    (function initMouseFeather() {
+        // 触屏/无鼠标：直接跳过
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
+        var feather = document.createElement('span');
+        feather.className = 'mouse-feather';
+        feather.textContent = '🏸';
+        feather.style.opacity = '0';
+        document.body.appendChild(feather);
+
+        var mx = 0, my = 0;
+        var cx = 0, cy = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            mx = e.clientX;
+            my = e.clientY;
+            feather.style.opacity = '0.55';
+        });
+
+        document.addEventListener('mouseleave', function() {
+            feather.style.opacity = '0';
+        });
+
+        function tick() {
+            cx += (mx - cx) * 0.08;
+            cy += (my - cy) * 0.08;
+            feather.style.left = (cx - 8) + 'px';
+            feather.style.top = (cy - 8) + 'px';
+            requestAnimationFrame(tick);
+        }
+        tick();
+    })();
+
+    // ============================================
+    // 按钮悬浮羽毛球特效
+    // ============================================
+    (function initButtonShuttleEffect() {
+        function addShuttleHoverEffect(el) {
+            el.addEventListener('mouseenter', (e) => {
+                const rect = el.getBoundingClientRect();
+                const shuttle = document.createElement('span');
+                shuttle.className = 'click-feather';
+                shuttle.textContent = '🏸';
+                shuttle.style.cssText = `
+                    position: fixed;
+                    left: ${rect.right + 10}px;
+                    top: ${rect.top + rect.height / 2}px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    font-size: 28px;
+                    --dx: 60px;
+                    --dy: -40px;
+                    animation: featherFly 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+                `;
+                document.body.appendChild(shuttle);
+                shuttle.addEventListener('animationend', () => shuttle.remove());
+            });
+        }
+
+        // 给所有按钮和链接添加效果
+        document.querySelectorAll('.submit-btn, .primary-btn, .new-order-btn, .retry-btn, .choice-card, .radio-label').forEach(addShuttleHoverEffect);
+    })();
+
+    // ============================================
+    // 初始化
+    // ============================================
     const today = getShanghaiNow().date;
     document.getElementById('dropoffDate').setAttribute('min', today);
     document.getElementById('pickupDate').setAttribute('min', today);
