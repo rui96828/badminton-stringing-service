@@ -1106,10 +1106,10 @@ body.modal-open {
 }
 
 .modal-card {
-    width: min(620px, 100%);
-    max-height: 90vh;
+    width: min(540px, 100%);
+    max-height: 86vh;
     overflow-y: auto;
-    padding: 26px;
+    padding: 20px;
     background: #fff;
     border-radius: var(--radius-md);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
@@ -1140,9 +1140,9 @@ body.modal-open {
 }
 
 .modal-card h3 {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     color: var(--color-primary-dark);
-    font-size: 22px;
+    font-size: 19px;
 }
 
 .modal-card h4 {
@@ -1152,7 +1152,7 @@ body.modal-open {
 
 .string-options {
     display: grid;
-    gap: 10px;
+    gap: 7px;
 }
 
 .grip-form-group {
@@ -1223,8 +1223,8 @@ body.modal-open {
 .choice-card {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 13px 15px;
+    gap: 9px;
+    padding: 9px 12px;
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -1240,8 +1240,8 @@ body.modal-open {
 }
 
 .choice-card input {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     accent-color: var(--color-primary);
 }
 
@@ -1252,6 +1252,7 @@ body.modal-open {
 
 .choice-card small {
     color: var(--color-text-light);
+    font-size: 12px;
 }
 
 .choice-card.recommended {
@@ -1318,12 +1319,12 @@ body.modal-open {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .primary-btn,
 .secondary-btn {
-    padding: 11px 20px;
+    padding: 9px 16px;
     border-radius: var(--radius-sm);
     font: inherit;
     font-weight: 600;
@@ -1537,13 +1538,14 @@ body.modal-open {
 
 .grommet-options {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 7px;
 }
 
 .grommet-options .radio-label {
-    flex: 1 1 130px;
+    flex: 1 1 105px;
     justify-content: center;
-    padding: 9px 10px;
+    padding: 7px 8px;
+    font-size: 12px;
 }
 
 .racket-error {
