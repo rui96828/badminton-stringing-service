@@ -32,7 +32,6 @@
     };
     const COLOR_OPTIONS = [
         '白色', '黄色', '橙色', '红色', '绿色', '蓝色', '紫色', '黑色', '粉色',
-        '其他（请在备注中说明）', '白色（固定）', '随机搭配（以现货为准）',
     ];
 
     const form = document.getElementById('bookingForm');
@@ -155,6 +154,12 @@
         const colorSelect = card.querySelector('[data-field="stringColor"]');
         modelInput.value = option.name;
         modelInput.readOnly = true;
+        colorSelect.querySelectorAll('[data-provider-only]').forEach(item => item.remove());
+        const providerColorOption = document.createElement('option');
+        providerColorOption.value = option.color;
+        providerColorOption.textContent = option.color;
+        providerColorOption.dataset.providerOnly = 'true';
+        colorSelect.appendChild(providerColorOption);
         colorSelect.value = option.color;
         colorSelect.disabled = true;
         card.querySelector('[data-role="string-model-hint"]').textContent =
@@ -252,6 +257,7 @@
         const mi = card.querySelector('[data-field="stringModel"]');
         const cs = card.querySelector('[data-field="stringColor"]');
         mi.readOnly = false; mi.value = ''; mi.placeholder = '如：YONEX BG80、胜利 VBS63';
+        cs.querySelectorAll('[data-provider-only]').forEach(item => item.remove());
         cs.disabled = false; cs.value = '';
         card.querySelector('[data-role="string-model-hint"]').textContent = '自带球线必须填写品牌与型号。';
         card.querySelector('[data-role="string-color-hint"]').textContent = '自带球线必须选择颜色。';
