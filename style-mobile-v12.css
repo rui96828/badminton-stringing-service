@@ -1255,6 +1255,48 @@ body.modal-open {
     font-size: 11px;
 }
 
+.choice-card.featured-string {
+    position: relative;
+    border-color: rgba(26, 147, 111, 0.42);
+    background: linear-gradient(135deg, rgba(234, 247, 242, 0.72), rgba(255, 248, 232, 0.55));
+    padding-right: 112px;
+}
+
+.featured-string .string-tip {
+    color: var(--color-primary-dark);
+    line-height: 1.45;
+}
+
+.featured-string .string-badges {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    grid-template-columns: none;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.string-badges b {
+    padding: 2px 7px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(111, 83, 18, 0.14);
+}
+
+.string-badges .versatile-badge {
+    background: linear-gradient(135deg, #1a936f, #11735a);
+}
+
+.string-badges .recommend-badge {
+    background: linear-gradient(135deg, #f59e0b, #e07b3a);
+}
+
 .choice-card.recommended {
     border-left: 4px solid var(--color-primary);
     position: relative;
@@ -1746,6 +1788,10 @@ body.modal-open {
 }
 
 @media (max-width: 600px) {
+    .choice-card.featured-string { padding-right: 10px; flex-wrap: wrap; }
+    .featured-string .string-badges {
+        position: static; transform: none; margin-left: 23px; justify-content: flex-start;
+    }
     .logo-text { font-size: 17px; letter-spacing: 0; }
     .logo-icon { font-size: 34px; }
     .header-subtitle { font-size: 13px; letter-spacing: 2px; }

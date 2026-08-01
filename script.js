@@ -12,8 +12,8 @@
     const WEB3FORMS_ACCESS_KEY = '1b796361-dea0-4063-8009-8dafc14ed7f6';
     const LABOR_PRICE = 20;
     const STRING_OPTIONS = {
-        vbs66n: { name: '胜利 VBS66N', price: 28, color: '白色（固定）' },
-        bg65: { name: 'YONEX BG65', price: 30, color: '随机搭配（以现货为准）' },
+        vbs66n: { name: '胜利 VBS66N（白色）', price: 28, color: '白色（固定）' },
+        bg65: { name: 'YONEX BG65（黄色）', price: 30, color: '黄色（固定）' },
         kt61: { name: '卡琳 KT61', price: 20, color: '随机搭配（以现货为准）' },
         kt65: { name: '卡琳 KT65', price: 21, color: '随机搭配（以现货为准）' },
     };
@@ -185,7 +185,11 @@
         card.querySelector('[data-role="string-model-hint"]').textContent =
             `已选择 ${option.name}，¥${option.price} / 条。`;
         card.querySelector('[data-role="string-color-hint"]').textContent =
-            selected.value === 'vbs66n' ? '胜利 VBS66N 仅提供白色。' : '颜色将根据球拍样式和现货随机协调搭配。';
+            selected.value === 'vbs66n'
+                ? '胜利 VBS66N 仅提供白色，推荐拉 26 磅及以上，体验更佳哦！'
+                : selected.value === 'bg65'
+                    ? 'YONEX BG65 仅提供黄色。'
+                    : '颜色将根据球拍样式和现货随机协调搭配。';
         clearCardError(card, 'stringModel');
         clearCardError(card, 'stringColor');
         stringModalError.textContent = '';
