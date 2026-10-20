@@ -1772,9 +1772,6 @@ body.modal-open {
 
     /* 关闭鼠标跟随 */
     .mouse-feather { display: none !important; }
-    /* 关闭点击特效（JS已跳过，CSS兜底） */
-    .click-ripple, .click-feather, .click-star, .click-trail { display: none !important; }
-
     /* 降低背景模糊性能消耗 */
     .info-card, .form-section, .top-price-card {
         -webkit-backdrop-filter: blur(8px) saturate(110%);

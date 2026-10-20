@@ -648,12 +648,9 @@
     })();
 
     // ============================================
-    // 全局点击特效系统（仅桌面端）
+    // 全局点击特效系统（桌面端与触屏端一致）
     // ============================================
     (function initClickEffects() {
-        // 触屏设备跳过点击特效，只保留背景粒子
-        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
-
         var rippleColors = ['#1a936f', '#2563eb', '#f4a261', '#a855f7', '#f59e0b'];
         var featherIcons = ['🏸', '🪶', '🏸'];
         var starChars = ['✦', '✧', '✨', '💫', '⭐'];
