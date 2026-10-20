@@ -1842,4 +1842,74 @@ body.modal-open {
         position: static; transform: none; margin-left: 4px; display: inline-block;
     }
     .choice-card.recommended { display: flex; flex-wrap: wrap; }
-}"
+}
+
+/* 球线列表独立滚动，标题和确认按钮始终可见。 */
+#stringModal {
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    align-items: center;
+}
+#stringModal .modal-card {
+    display: flex;
+    flex-direction: column;
+    width: min(560px, 100%);
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height: 0;
+    padding: 16px;
+    overflow: hidden;
+}
+#stringModalTitle { flex: 0 0 auto; }
+#stringModal .string-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px;
+}
+#stringModal .string-options { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+#stringModal .choice-card {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: start;
+    gap: 6px 10px;
+    padding: 12px;
+    min-width: 0;
+    transform: none;
+}
+#stringModal .choice-card input { margin-top: 5px; width: 18px; height: 18px; }
+#stringModal .choice-card > span { min-width: 0; }
+#stringModal .choice-card strong,
+#stringModal .choice-card small {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+}
+#stringModal .choice-card strong { font-size: 15px; }
+#stringModal .choice-card small { font-size: 13px; color: #475569; }
+#stringModal .choice-card .string-tip { color: #225b49; }
+#stringModal .featured-string .string-badges {
+    position: static;
+    grid-column: 2;
+    transform: none;
+    margin: 0;
+    justify-content: flex-start;
+}
+#stringModal .modal-error { flex: 0 0 auto; }
+#stringModal .modal-error:empty { display: none; }
+#stringModal .modal-actions {
+    position: static;
+    flex: 0 0 auto;
+    margin: 12px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--color-border);
+    background: #fff;
+}
+#stringModal .modal-actions button { flex: 1; min-height: 44px; }
+@media (max-width: 600px) {
+    #stringModal .modal-card { padding: 12px; }
+    #stringModal .choice-card { padding: 10px; }
+}
