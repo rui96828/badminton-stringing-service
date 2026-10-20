@@ -14,6 +14,7 @@
     const STRING_OPTIONS = {
         vbs66n: { name: '胜利 VBS66N（白色）', price: 28 },
         xb63: { name: 'YONEX XB63（白色）', price: 50 },
+        bg80: { name: 'YONEX BG80（白色）', price: 38 },
         ex63: { name: '卡琳 EX63（淡紫色百搭）', price: 18 },
         raiming65: { name: '高神雷鸣65（红色）', price: 30 },
         ion63: { name: '杜力臣 ION63（霓虹粉色）', price: 35 },
