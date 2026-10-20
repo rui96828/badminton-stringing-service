@@ -12,10 +12,12 @@
     const WEB3FORMS_ACCESS_KEY = '1b796361-dea0-4063-8009-8dafc14ed7f6';
     const LABOR_PRICE = 20;
     const STRING_OPTIONS = {
-        vbs66n: { name: '胜利 VBS66N（白色）', price: 28, color: '白色（固定）' },
-        bg65: { name: 'YONEX BG65（黄色）', price: 30, color: '黄色（固定）' },
-        kt61: { name: '卡琳 KT61', price: 20, color: '随机搭配（以现货为准）' },
-        kt65: { name: '卡琳 KT65', price: 21, color: '随机搭配（以现货为准）' },
+        vbs66n: { name: '胜利 VBS66N（白色）', price: 28 },
+        xb63: { name: 'YONEX XB63（白色）', price: 50 },
+        ex63: { name: '卡琳 EX63（淡紫色百搭）', price: 18 },
+        raiming65: { name: '高神雷鸣65（红色）', price: 30 },
+        ion63: { name: '杜力臣 ION63（霓虹粉色）', price: 35 },
+        js63: { name: '熏风 JS63（白色）', price: 24 },
     };
     const GROMMET_OPTIONS = {
         none: { name: '不需要更换', price: 0 },
@@ -30,9 +32,6 @@
         victorGr1: { name: '胜利 GR1', price: 4 },
         victorGr223: { name: '胜利 GR223', price: 8 },
     };
-    const COLOR_OPTIONS = [
-        '白色', '黄色', '橙色', '红色', '绿色', '蓝色', '紫色', '黑色', '粉色',
-    ];
 
     const form = document.getElementById('bookingForm');
     const racketCount = document.getElementById('racketCount');
@@ -171,27 +170,11 @@
         const option = STRING_OPTIONS[selected.value];
         card.dataset.providedString = selected.value;
         const modelInput = card.querySelector('[data-field="stringModel"]');
-        const colorSelect = card.querySelector('[data-field="stringColor"]');
         modelInput.value = option.name;
         modelInput.readOnly = true;
-        colorSelect.querySelectorAll('[data-provider-only]').forEach(item => item.remove());
-        const providerColorOption = document.createElement('option');
-        providerColorOption.value = option.color;
-        providerColorOption.textContent = option.color;
-        providerColorOption.dataset.providerOnly = 'true';
-        colorSelect.appendChild(providerColorOption);
-        colorSelect.value = option.color;
-        colorSelect.disabled = true;
         card.querySelector('[data-role="string-model-hint"]').textContent =
             `已选择 ${option.name}，¥${option.price} / 条。`;
-        card.querySelector('[data-role="string-color-hint"]').textContent =
-            selected.value === 'vbs66n'
-                ? '胜利 VBS66N 仅提供白色，推荐拉 26 磅及以上，体验更佳哦！'
-                : selected.value === 'bg65'
-                    ? 'YONEX BG65 仅提供黄色。'
-                    : '颜色将根据球拍样式和现货随机协调搭配。';
         clearCardError(card, 'stringModel');
-        clearCardError(card, 'stringColor');
         stringModalError.textContent = '';
         closeModal(stringModal);
         activeRacketIndex = null;
@@ -264,12 +247,11 @@
 
     function racketCardTemplate(index) {
         const num = index + 1;
-        const colorOpts = COLOR_OPTIONS.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
         return `<section class="racket-card" data-index="${index}">
             <h3>🏸 第 ${num} 支球拍</h3>
             <div class="form-group"><label>球拍品牌/型号 <span class="required">*</span></label><input type="text" data-field="racketModel" placeholder="如：YONEX 天斧100ZZ、李宁 风刃900" required><span class="racket-error" data-error-for="racketModel"></span></div>
             <div class="form-group"><label>球线来源 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="stringSource_${index}" value="self" data-role="string-source" required>自带球线</label><label class="radio-label"><input type="radio" name="stringSource_${index}" value="provided" data-role="string-source" required>需要提供球线</label></div><span class="racket-error" data-error-for="stringSource"></span></div>
-            <div class="form-row"><div class="form-group"><label>球线品牌/型号 <span class="required">*</span></label><input type="text" data-field="stringModel" placeholder="请先选择球线来源" required><span class="racket-error" data-error-for="stringModel"></span><small class="hint" data-role="string-model-hint">自带线请填写型号；需要提供请在弹窗选择。</small></div><div class="form-group"><label>球线颜色 <span class="required">*</span></label><select data-field="stringColor" required><option value="">请选择颜色</option>${colorOpts}</select><span class="racket-error" data-error-for="stringColor"></span><small class="hint" data-role="string-color-hint">自带球线必须选择颜色。</small></div></div>
+            <div class="form-group"><label>球线品牌/型号 <span class="required">*</span></label><input type="text" data-field="stringModel" placeholder="请先选择球线来源" required><span class="racket-error" data-error-for="stringModel"></span><small class="hint" data-role="string-model-hint">自带线请填写型号；需要提供请在弹窗选择。</small></div>
             <div class="form-group"><label>是否需要更换护线管 <span class="required">*</span></label><div class="radio-group grommet-options"><label class="radio-label"><input type="radio" name="grommet_${index}" value="none" data-field="grommet" required>不需要</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="partial" data-field="grommet" required>局部 +¥3</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="half" data-field="grommet" required>一半 +¥7</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="full" data-field="grommet" required>全套 +¥12</label></div><span class="racket-error" data-error-for="grommet"></span><div class="grommet-tip">💡 <strong>温馨小贴士：</strong>建议您勤换护线管（全新的单线孔护线管一般可以使用3-4次，双线孔护线管一般可以使用2-3次），勤换护线管可以有效防止您的爱拍塌陷，从而有效地防止您的拍子意外断裂。</div></div>
             <div class="form-group grip-form-group"><label>是否需要更换手胶 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="gripNeeded_${index}" value="no" data-role="grip-needed" required>不需要</label><label class="radio-label"><input type="radio" name="gripNeeded_${index}" value="yes" data-role="grip-needed" required>需要购买手胶</label></div><span class="racket-error" data-error-for="gripNeeded"></span><small class="grip-summary" data-role="grip-summary">请选择是否需要手胶。</small></div>
             <div class="form-group"><label>穿线磅数 (lbs) <span class="required">*</span></label><div class="tension-dual-row"><div class="tension-item"><span class="tension-label">横线</span><input type="number" data-field="tensionHorizontal" placeholder="如：25" min="16" max="35" step="0.5" required><span class="tension-suffix">lbs</span></div><span class="tension-sep">×</span><div class="tension-item"><span class="tension-label">竖线</span><input type="number" data-field="tensionVertical" placeholder="如：24" min="16" max="35" step="0.5" required><span class="tension-suffix">lbs</span></div></div><span class="racket-error" data-error-for="tension"></span><small class="hint">建议范围 20-30 磅，横线通常比竖线高 1-2 磅。</small></div>
@@ -279,12 +261,8 @@
     function resetCardForOwnString(card) {
         delete card.dataset.providedString;
         const mi = card.querySelector('[data-field="stringModel"]');
-        const cs = card.querySelector('[data-field="stringColor"]');
         mi.readOnly = false; mi.value = ''; mi.placeholder = '如：YONEX BG80、胜利 VBS63';
-        cs.querySelectorAll('[data-provider-only]').forEach(item => item.remove());
-        cs.disabled = false; cs.value = '';
         card.querySelector('[data-role="string-model-hint"]').textContent = '自带球线必须填写品牌与型号。';
-        card.querySelector('[data-role="string-color-hint"]').textContent = '自带球线必须选择颜色。';
     }
 
     function openStringModal(index) {
@@ -312,11 +290,11 @@
         if (!cards.length) return false;
         let allValid = true;
         cards.forEach(card => {
-            ['racketModel', 'stringModel', 'stringColor'].forEach(field => {
+            ['racketModel', 'stringModel'].forEach(field => {
                 const inp = card.querySelector(`[data-field="${field}"]`);
                 if (inp.value.trim() === '') {
                     allValid = false;
-                    const msgs = { racketModel: '请填写这支球拍的品牌与型号', stringModel: '请填写或选择球线型号', stringColor: '请选择或确认球线颜色' };
+                    const msgs = { racketModel: '请填写这支球拍的品牌与型号', stringModel: '请填写或选择球线型号' };
                     setCardError(card, field, msgs[field]); inp.classList.add('error');
                 }
             });
@@ -369,7 +347,6 @@
                 racketModel: card.querySelector('[data-field="racketModel"]').value.trim(),
                 stringSource: src.value === 'self' ? '自带球线' : '需要提供球线',
                 stringModel: card.querySelector('[data-field="stringModel"]').value.trim(),
-                stringColor: card.querySelector('[data-field="stringColor"]').value,
                 stringPrice: sp,
                 grommetReplace: grommet.name,
                 grommetPrice: grommet.price,
@@ -406,7 +383,7 @@
     function renderOrderReview(order) {
         const racketSections = order.rackets.map(racket => `<div class="review-racket">
             <h4>第 ${racket.number} 支球拍 · 小计 ¥${formatMoney(racket.subtotal)}</h4>
-            ${reviewRows([['球拍型号', racket.racketModel], ['球线来源', racket.stringSource], ['球线型号', racket.stringModel], ['球线颜色', racket.stringColor], ['穿线磅数', `横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`], ['护线管', racket.grommetReplace], ['手胶', racket.gripNeeded === '需要' ? `${racket.gripModel}（¥${formatMoney(racket.gripPrice)}）` : '不需要'], ['本拍费用', `手工 ¥${formatMoney(racket.laborPrice)} + 护线管 ¥${formatMoney(racket.grommetPrice)} + 球线 ¥${formatMoney(racket.stringPrice)} + 手胶 ¥${formatMoney(racket.gripPrice)}`]])}
+            ${reviewRows([['球拍型号', racket.racketModel], ['球线来源', racket.stringSource], ['球线型号', racket.stringModel], ['穿线磅数', `横线 ${racket.tensionHorizontal} / 竖线 ${racket.tensionVertical}`], ['护线管', racket.grommetReplace], ['手胶', racket.gripNeeded === '需要' ? `${racket.gripModel}（¥${formatMoney(racket.gripPrice)}）` : '不需要'], ['本拍费用', `手工 ¥${formatMoney(racket.laborPrice)} + 护线管 ¥${formatMoney(racket.grommetPrice)} + 球线 ¥${formatMoney(racket.stringPrice)} + 手胶 ¥${formatMoney(racket.gripPrice)}`]])}
         </div>`).join('');
         orderReviewContent.innerHTML = `<div class="order-number">订单号：${escapeHtml(order.orderNumber)}</div>
             <div class="review-section">${reviewRows([['客户姓名', order.name], ['联系方式', order.contact], ['球拍数量', `${order.racketCount} 支`], ['送拍时间', `${order.dropoffDate} ${order.dropoffTime}`], ['取拍时间', `${order.pickupDate} ${order.pickupTime}`], ['备注', order.notes]])}</div>
@@ -435,7 +412,7 @@
         const order = pendingOrder;
         const racketText = order.rackets.map(r => [
             `【第 ${r.number} 支球拍】`, `球拍型号：${r.racketModel}`, `球线来源：${r.stringSource}`,
-            `球线型号：${r.stringModel}`, `球线颜色：${r.stringColor}`,
+            `球线型号：${r.stringModel}`,
             `穿线磅数：横线 ${r.tensionHorizontal} / 竖线 ${r.tensionVertical}`,
             `护线管：${r.grommetReplace}`,
             `手胶：${r.gripNeeded === '需要' ? `${r.gripModel}（¥${formatMoney(r.gripPrice)}）` : '不需要'}`,
