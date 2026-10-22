@@ -334,9 +334,15 @@ select:hover ~ .mouse-feather,
 }
 
 .logo-icon {
-    font-size: 48px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    animation: racketBounce 2s ease-in-out infinite;
+    display: block;
+    flex: 0 0 auto;
+    width: 88px;
+    height: 48px;
+    padding: 4px;
+    object-fit: cover;
+    object-position: center 54%;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 10px;
 }
 
 @keyframes racketBounce {
@@ -348,6 +354,8 @@ select:hover ~ .mouse-feather,
 }
 
 .logo-text {
+    min-width: 0;
+    text-wrap: balance;
     font-size: 26px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -359,6 +367,8 @@ select:hover ~ .mouse-feather,
     background-clip: text;
     animation: shimmer 4s ease-in-out infinite;
 }
+
+.logo-campus { white-space: nowrap; }
 
 @keyframes shimmer {
     0%, 100% { background-position: 0% 50%; }
@@ -1790,7 +1800,8 @@ body.modal-open {
         position: static; transform: none; margin-left: 23px; justify-content: flex-start;
     }
     .logo-text { font-size: 17px; letter-spacing: 0; }
-    .logo-icon { font-size: 34px; }
+    .logo { gap: 9px; }
+    .logo-icon { width: 64px; height: 38px; border-radius: 8px; }
     .header-subtitle { font-size: 13px; letter-spacing: 2px; }
     .header-contact {
         margin-top: 12px;
