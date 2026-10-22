@@ -9,32 +9,33 @@
     // ============================================
     // 预约表单逻辑
     // ============================================
-    const WEB3FORMS_ACCESS_KEY = '1b796361-dea0-4063-8009-8dafc14ed7f6';
-    const LABOR_PRICE = 20;
-    const STRING_OPTIONS = {
-        vbs66n: { name: '胜利 VBS66N（白色）', price: 28 },
-        xb63: { name: 'YONEX XB63（白色）', price: 50 },
-        bg80: { name: 'YONEX BG80（白色）', price: 38 },
-        liningN65: { name: '李宁 N65（白色）', price: 36 },
-        liningNo1: { name: '李宁一号线（黄色）', price: 33 },
-        ex63: { name: '卡琳 EX63（淡紫色百搭）', price: 18 },
-        raiming65: { name: '高神雷鸣65（红色）', price: 30 },
-        ion63: { name: '杜力臣 ION63（霓虹粉色）', price: 35 },
-        js63: { name: '熏风 JS63（白色）', price: 24 },
-    };
-    const GROMMET_OPTIONS = {
-        none: { name: '不需要更换', price: 0 },
-        partial: { name: '局部更换（≤8个）', price: 3 },
-        half: { name: '更换一半', price: 7 },
-        full: { name: '更换全套', price: 12 },
-    };
-    const GRIP_OPTIONS = {
-        purui7c: { name: '浦锐 7C', price: 3.5 },
-        huameiAce102: { name: '华美 ACE102', price: 2.5 },
-        yonex102c: { name: 'YONEX 102C', price: 10 },
-        victorGr1: { name: '胜利 GR1', price: 4 },
-        victorGr223: { name: '胜利 GR223', price: 8 },
-    };
+    const SITE_CONFIG = window.SITE_CONFIG || {};
+    const SITE = SITE_CONFIG.site || {};
+    const NOTICES = SITE_CONFIG.notices || {};
+    const PRICING = SITE_CONFIG.pricing || {};
+    const SCHEDULE = SITE_CONFIG.schedule || {};
+    const SERVICE = SITE_CONFIG.service || {};
+
+    const WEB3FORMS_ACCESS_KEY = (SITE_CONFIG.integrations && SITE_CONFIG.integrations.web3formsKey) || '1b796361-dea0-4063-8009-8dafc14ed7f6';
+    const LABOR_PRICE = toNumber(PRICING.labor, 20);
+    const STRING_OPTIONS = indexByKey(PRICING.strings, [
+        { key: 'vbs66n', name: '胜利 VBS66N（白色）', price: 28 },
+        { key: 'bg80', name: 'YONEX BG80（白色）', price: 38 },
+        { key: 'ex63', name: '卡琳 EX63（淡紫色百搭）', price: 18 },
+    ]);
+    const GROMMET_OPTIONS = indexByKey(PRICING.grommets, [
+        { key: 'none', name: '不需要更换', price: 0 },
+        { key: 'partial', name: '局部换护线管（≤8个）', price: 3 },
+        { key: 'half', name: '更换一半护线管', price: 7 },
+        { key: 'full', name: '更换全套护线管', price: 12 },
+    ]);
+    const GRIP_OPTIONS = indexByKey(PRICING.grips, [
+        { key: 'purui7c', name: '浦锐 7C', price: 3.5 },
+        { key: 'huameiAce102', name: '华美 ACE102', price: 2.5 },
+        { key: 'yonex102c', name: 'YONEX 102C', price: 10 },
+        { key: 'victorGr1', name: '胜利 GR1', price: 4 },
+        { key: 'victorGr223', name: '胜利 GR223', price: 8 },
+    ]);
 
     const form = document.getElementById('bookingForm');
     const racketCount = document.getElementById('racketCount');
@@ -65,6 +66,8 @@
     let activeRacketIndex = null;
     let activeGripRacketIndex = null;
     let pendingOrder = null;
+
+    applySiteContent();
 
     const validators = {
         name: { validate: (v) => v.trim().length >= 2, message: '请输入至少 2 个字的姓名' },
@@ -255,7 +258,7 @@
             <div class="form-group"><label>球拍品牌/型号 <span class="required">*</span></label><input type="text" data-field="racketModel" placeholder="如：YONEX 天斧100ZZ、李宁 风刃900" required><span class="racket-error" data-error-for="racketModel"></span></div>
             <div class="form-group"><label>球线来源 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="stringSource_${index}" value="self" data-role="string-source" required>自带球线</label><label class="radio-label"><input type="radio" name="stringSource_${index}" value="provided" data-role="string-source" required>需要提供球线</label></div><span class="racket-error" data-error-for="stringSource"></span></div>
             <div class="form-group"><label>球线品牌/型号 <span class="required">*</span></label><input type="text" data-field="stringModel" placeholder="请先选择球线来源" required><span class="racket-error" data-error-for="stringModel"></span><small class="hint" data-role="string-model-hint">自带线请填写型号；需要提供请在弹窗选择。</small></div>
-            <div class="form-group"><label>是否需要更换护线管 <span class="required">*</span></label><div class="radio-group grommet-options"><label class="radio-label"><input type="radio" name="grommet_${index}" value="none" data-field="grommet" required>不需要</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="partial" data-field="grommet" required>局部 +¥3</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="half" data-field="grommet" required>一半 +¥7</label><label class="radio-label"><input type="radio" name="grommet_${index}" value="full" data-field="grommet" required>全套 +¥12</label></div><span class="racket-error" data-error-for="grommet"></span><div class="grommet-tip">💡 <strong>温馨小贴士：</strong>建议您勤换护线管（全新的单线孔护线管一般可以使用3-4次，双线孔护线管一般可以使用2-3次），勤换护线管可以有效防止您的爱拍塌陷，从而有效地防止您的拍子意外断裂。</div></div>
+            <div class="form-group"><label>是否需要更换护线管 <span class="required">*</span></label><div class="radio-group grommet-options">${grommetRadioOptions(index)}</div><span class="racket-error" data-error-for="grommet"></span><div class="grommet-tip">${NOTICES.grommetTip || ''}</div></div>
             <div class="form-group grip-form-group"><label>是否需要更换手胶 <span class="required">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="gripNeeded_${index}" value="no" data-role="grip-needed" required>不需要</label><label class="radio-label"><input type="radio" name="gripNeeded_${index}" value="yes" data-role="grip-needed" required>需要购买手胶</label></div><span class="racket-error" data-error-for="gripNeeded"></span><small class="grip-summary" data-role="grip-summary">请选择是否需要手胶。</small></div>
             <div class="form-group"><label>穿线磅数 (lbs) <span class="required">*</span></label><div class="tension-dual-row"><div class="tension-item"><span class="tension-label">横线</span><input type="number" data-field="tensionHorizontal" placeholder="如：25" min="16" max="35" step="0.5" required><span class="tension-suffix">lbs</span></div><span class="tension-sep">×</span><div class="tension-item"><span class="tension-label">竖线</span><input type="number" data-field="tensionVertical" placeholder="如：24" min="16" max="35" step="0.5" required><span class="tension-suffix">lbs</span></div></div><span class="racket-error" data-error-for="tension"></span><small class="hint">建议范围 20-30 磅，横线通常比竖线高 1-2 磅。</small></div>
         </section>`;
@@ -607,6 +610,150 @@
         ) {
             document.body.classList.remove('modal-open');
         }
+    }
+
+    function toNumber(value, fallback) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : fallback;
+    }
+
+    function indexByKey(list, fallback) {
+        const src = Array.isArray(list) && list.length ? list : fallback;
+        const out = {};
+        src.forEach((item, i) => {
+            if (!item || typeof item !== 'object') return;
+            const key = String(item.key || ('item' + i)).trim() || ('item' + i);
+            out[key] = Object.assign({}, item, { key: key, price: toNumber(item.price, 0) });
+        });
+        return out;
+    }
+
+    function setText(id, value) {
+        const el = document.getElementById(id);
+        if (el && value !== undefined && value !== null) el.textContent = String(value);
+    }
+
+    function applySiteContent() {
+        if (SITE.title) document.title = SITE.title;
+        setText('brandText', SITE.brand);
+        setText('subtitleText', SITE.subtitle);
+        setText('phoneText', SITE.phone);
+        setText('phoneNoteText', SITE.phoneNote);
+        setText('footerText', SITE.footer);
+
+        setText('fraudTitle', NOTICES.fraudTitle);
+        setText('fraudText', NOTICES.fraudText);
+        setText('safetyTitle', NOTICES.safetyTitle);
+        setText('safetyText', NOTICES.safetyText);
+        setText('contactNotice', NOTICES.contactNotice);
+        setText('addressTitle', NOTICES.addressTitle);
+        setText('addressText', NOTICES.address);
+        setText('addressNote', (NOTICES.addressNote || '').replace(/\{phone\}/g, SITE.phone || ''));
+        setText('stringStockTitle', NOTICES.stringStockTitle);
+        setText('stringStockText', NOTICES.stringStockText);
+        setText('gripNoticeTitle', NOTICES.gripNoticeTitle);
+        setText('gripNoticeText', NOTICES.gripNoticeText);
+        setText('paymentNote', NOTICES.paymentNote);
+
+        renderPriceTable();
+        renderFeatureList();
+        renderTensionTips();
+        renderStringOptions();
+        renderGripOptions();
+        renderTimeSlots();
+    }
+
+    function renderPriceTable() {
+        const tbody = document.getElementById('priceTableBody');
+        if (!tbody) return;
+        const rows = ['<tr><td>穿线手工费（每支）</td><td><strong>￥' + formatMoney(LABOR_PRICE) + '</strong></td></tr>'];
+        Object.values(GROMMET_OPTIONS).forEach(function (o) {
+            if (o.key === 'none') return;
+            rows.push('<tr><td>' + escapeHtml(o.name) + '</td><td>+￥' + formatMoney(o.price) + '</td></tr>');
+        });
+        const gripPrices = Object.values(GRIP_OPTIONS).map(function (o) { return o.price; });
+        if (gripPrices.length) {
+            const min = Math.min.apply(null, gripPrices);
+            const max = Math.max.apply(null, gripPrices);
+            rows.push('<tr><td>手胶</td><td>￥' + formatMoney(min) + (min === max ? '' : '–' + formatMoney(max)) + '</td></tr>');
+        }
+        tbody.innerHTML = rows.join('');
+
+        const notes = document.getElementById('priceNotes');
+        if (notes) {
+            notes.innerHTML = (NOTICES.priceNotes || []).map(function (n) {
+                return '<p class="price-note">' + escapeHtml(n) + '</p>';
+            }).join('');
+        }
+    }
+
+    function renderFeatureList() {
+        const ul = document.getElementById('featureList');
+        if (!ul) return;
+        ul.innerHTML = (SERVICE.features || []).map(function (f) {
+            return '<li>' + escapeHtml(f) + '</li>';
+        }).join('');
+    }
+
+    function renderTensionTips() {
+        const ul = document.getElementById('tensionList');
+        if (!ul) return;
+        ul.innerHTML = (SERVICE.tensionTips || []).map(function (t) {
+            return '<li><strong>' + escapeHtml(t.label) + '：</strong>' + escapeHtml(t.range) + '</li>';
+        }).join('');
+        setText('tensionNote', SERVICE.tensionNote);
+    }
+
+    function renderStringOptions() {
+        const box = document.getElementById('stringOptions');
+        if (!box) return;
+        box.innerHTML = Object.values(STRING_OPTIONS).map(function (o) {
+            const bits = ['￥' + formatMoney(o.price) + ' / 条'];
+            if (o.desc) bits.push(o.desc);
+            let smalls = '<small>' + escapeHtml(bits.join(' · ')) + '</small>';
+            if (o.tip) smalls += '<small class="string-tip">' + escapeHtml(o.tip) + '</small>';
+            const badges = (o.badges || []).map(function (b, i) {
+                return '<b class="' + (i === 0 ? 'versatile-badge' : 'recommend-badge') + '">' + escapeHtml(b) + '</b>';
+            }).join('');
+            const cls = 'choice-card' + (o.featured ? ' featured-string' : '') + (o.recommended ? ' recommended' : '');
+            return '<label class="' + cls + '">' +
+                '<input type="radio" name="providedString" value="' + escapeHtml(o.key) + '">' +
+                '<span><strong>' + escapeHtml(o.name) + '</strong>' + smalls + '</span>' +
+                (badges ? '<span class="string-badges">' + badges + '</span>' : '') +
+                '</label>';
+        }).join('');
+    }
+
+    function renderGripOptions() {
+        const box = document.getElementById('gripOptions');
+        if (!box) return;
+        box.innerHTML = Object.values(GRIP_OPTIONS).map(function (o) {
+            return '<label class="choice-card">' +
+                '<input type="radio" name="providedGrip" value="' + escapeHtml(o.key) + '">' +
+                '<span><strong>' + escapeHtml(o.name) + '</strong><small>￥' + formatMoney(o.price) + ' / 条</small></span>' +
+                '</label>';
+        }).join('');
+    }
+
+    function renderTimeSlots() {
+        fillTimeSelect(document.getElementById('dropoffTime'), SCHEDULE.dropoffSlots);
+        fillTimeSelect(document.getElementById('pickupTime'), SCHEDULE.pickupSlots);
+    }
+
+    function fillTimeSelect(select, slots) {
+        if (!select) return;
+        const list = Array.isArray(slots) ? slots : [];
+        select.innerHTML = '<option value="">请选择</option>' + list.map(function (s) {
+            return '<option value="' + escapeHtml(s) + '">' + escapeHtml(String(s).replace('-', ' - ')) + '</option>';
+        }).join('');
+    }
+
+    function grommetRadioOptions(index) {
+        return Object.values(GROMMET_OPTIONS).map(function (o) {
+            const label = o.key === 'none' ? '不需要' : ((o.short || o.name) + ' +￥' + formatMoney(o.price));
+            return '<label class="radio-label"><input type="radio" name="grommet_' + index +
+                '" value="' + escapeHtml(o.key) + '" data-field="grommet" required>' + escapeHtml(label) + '</label>';
+        }).join('');
     }
 
     function formatMoney(value) {

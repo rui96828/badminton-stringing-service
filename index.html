@@ -19,17 +19,17 @@
         <div class="header-inner">
             <div class="logo">
                 <span class="logo-icon">🏸</span>
-                <span class="logo-text">锋羽工作室穿线服务预约（茶园校区）</span>
+                <span class="logo-text" id="brandText">锋羽工作室穿线服务预约（茶园校区）</span>
             </div>
-            <p class="header-subtitle">专业穿线 · 手工精调 · 快速交付</p>
-            <p class="header-contact">☎ 联系电话：15123340820 <span>（微信同号）</span></p>
+            <p class="header-subtitle" id="subtitleText">专业穿线 · 手工精调 · 快速交付</p>
+            <p class="header-contact">☎ 联系电话：<strong id="phoneText">15123340820</strong> <span id="phoneNoteText">（微信同号）</span></p>
         </div>
     </header>
 
     <!-- 重要防诈骗提示 -->
     <section class="fraud-warning" role="alert" aria-label="重要防诈骗提示">
-        <strong>⚠️ 重要提示</strong>
-        <p>本网站只用于穿线服务的预约，在此网站上不会以任何方式向您索要费用，费用均是由线下取拍的时候当面支付，请您注意辨别，谨防上当受骗！！！</p>
+        <strong id="fraudTitle">⚠️ 重要提示</strong>
+        <p id="fraudText"></p>
     </section>
 
     <!-- 价格说明 -->
@@ -39,16 +39,9 @@
             <thead>
                 <tr><th>项目</th><th>费用</th></tr>
             </thead>
-            <tbody>
-                <tr><td>穿线手工费（每支）</td><td><strong>¥20</strong></td></tr>
-                <tr><td>局部换护线管（≤8个）</td><td>+¥3</td></tr>
-                <tr><td>更换一半护线管</td><td>+¥7</td></tr>
-                <tr><td>更换全套护线管</td><td>+¥12</td></tr>
-                <tr><td>手胶</td><td>¥2.5–10</td></tr>
-            </tbody>
+            <tbody id="priceTableBody"></tbody>
         </table>
-        <p class="price-note">* 球线费用另计（自带线免球线费，需提供则按实际型号报价）</p>
-        <p class="price-note">* 以上为单支拍价格，最终以确认为准</p>
+        <div id="priceNotes"></div>
     </section>
 
     <!-- 主体内容 -->
@@ -58,24 +51,13 @@
             <aside class="info-sidebar">
                 <div class="info-card">
                     <h3>💡 服务说明</h3>
-                    <ul>
-                        <li>✅ 专业手工穿线，精准磅数</li>
-                        <li>✅ 多种品牌球线可选</li>
-                        <li>✅ 支持自带球线或我们提供</li>
-                        <li>✅ 最快当天可取</li>
-                        <li>✅ 穿线法均采用业界最优秀之一的张仁环游穿线法</li>
-                    </ul>
+                    <ul id="featureList"></ul>
                 </div>
 
                 <div class="info-card">
                     <h3>🎯 磅数建议</h3>
-                    <ul>
-                        <li><strong>初学者：</strong>20-22 磅</li>
-                        <li><strong>进阶爱好者：</strong>22-24 磅</li>
-                        <li><strong>高水平选手：</strong>24-27 磅</li>
-                        <li><strong>专业选手：</strong>27-30+ 磅</li>
-                    </ul>
-                    <p class="price-note">磅数越高弹性越小、控制越精准，但对力量要求更高</p>
+                    <ul id="tensionList"></ul>
+                    <p class="price-note" id="tensionNote"></p>
                 </div>
 
             </aside>
@@ -85,8 +67,8 @@
                 <h2 class="form-title">📝 预约穿线下单</h2>
 
                 <div class="racket-safety-notice">
-                    <strong>温馨提示</strong>
-                    <p>每块拍子在穿线前都会仔细检查。如果发现您的爱拍有裂纹、断裂等不适合拉线的情况，我们不会为您拉线，并会按照您提供的联系方式联系您。也请您在下单之前仔细检查您的爱拍是否有损坏，感谢您的配合。</p>
+                    <strong id="safetyTitle">温馨提示</strong>
+                    <p id="safetyText"></p>
                 </div>
 
                 <form id="bookingForm" novalidate>
@@ -103,7 +85,7 @@
                         <input type="tel" id="contact" name="contact" inputmode="numeric"
                                autocomplete="tel" maxlength="11" placeholder="请输入11位手机号码" required>
                         <span class="error-msg" data-for="contact"></span>
-                        <div class="contact-notice">📞 我们将会以您提供的电话号码联系您取拍，请务必填写本人可正常接听的手机号码。</div>
+                        <div class="contact-notice" id="contactNotice"></div>
                     </div>
 
                     <!-- 再次确认联系方式 -->
@@ -143,10 +125,10 @@
 
                     <!-- 送拍及取拍地址 -->
                     <div class="form-group">
-                        <label class="address-heading">📍 送拍及取拍地址</label>
+                        <label class="address-heading" id="addressTitle">📍 送拍及取拍地址</label>
                         <div class="address-box">
-                            <p class="address-text">🏢 <strong>重庆工商大学茶园校区 13栋楼下</strong></p>
-                            <p class="address-note">📱 到达后短信联系 <strong>15123340820</strong> 即可，也可以直接放在阿姨那里，跟阿姨说会有人来取。</p>
+                            <p class="address-text">📦 <strong id="addressText"></strong></p>
+                            <p class="address-note" id="addressNote"></p>
                         </div>
                     </div>
 
@@ -161,21 +143,6 @@
                             <label for="dropoffTime">送拍时间 <span class="required">*</span></label>
                             <select id="dropoffTime" name="dropoffTime" required disabled>
                                 <option value="">请选择</option>
-                                <option value="08:00-09:00">08:00 - 09:00</option>
-                                <option value="09:00-10:00">09:00 - 10:00</option>
-                                <option value="10:00-11:00">10:00 - 11:00</option>
-                                <option value="11:00-12:00">11:00 - 12:00</option>
-                                <option value="12:00-13:00">12:00 - 13:00</option>
-                                <option value="13:00-14:00">13:00 - 14:00</option>
-                                <option value="14:00-15:00">14:00 - 15:00</option>
-                                <option value="15:00-16:00">15:00 - 16:00</option>
-                                <option value="16:00-17:00">16:00 - 17:00</option>
-                                <option value="17:00-18:00">17:00 - 18:00</option>
-                                <option value="18:00-19:00">18:00 - 19:00</option>
-                                <option value="19:00-20:00">19:00 - 20:00</option>
-                                <option value="20:00-21:00">20:00 - 21:00</option>
-                                <option value="21:00-22:00">21:00 - 22:00</option>
-                                <option value="22:00-23:00">22:00 - 23:00</option>
                             </select>
                             <span class="error-msg" data-for="dropoffTime"></span>
                         </div>
@@ -192,19 +159,6 @@
                             <label for="pickupTime">取拍时间 <span class="required">*</span></label>
                             <select id="pickupTime" name="pickupTime" required disabled>
                                 <option value="">请选择</option>
-                                <option value="08:00-09:00">08:00 - 09:00</option>
-                                <option value="09:00-10:00">09:00 - 10:00</option>
-                                <option value="10:00-11:00">10:00 - 11:00</option>
-                                <option value="11:00-12:00">11:00 - 12:00</option>
-                                <option value="12:00-13:00">12:00 - 13:00</option>
-                                <option value="13:00-14:00">13:00 - 14:00</option>
-                                <option value="14:00-15:00">14:00 - 15:00</option>
-                                <option value="15:00-16:00">15:00 - 16:00</option>
-                                <option value="16:00-17:00">16:00 - 17:00</option>
-                                <option value="17:00-18:00">17:00 - 18:00</option>
-                                <option value="18:00-19:00">18:00 - 19:00</option>
-                                <option value="19:00-20:00">19:00 - 20:00</option>
-                                <option value="20:00-21:00">20:00 - 21:00</option>
                             </select>
                             <span class="error-msg" data-for="pickupTime"></span>
                         </div>
@@ -251,55 +205,10 @@
         <div class="modal-card">
             <h3 id="stringModalTitle">请选择球线型号</h3>
             <div class="string-modal-body">
-            <div class="string-options">
-                <label class="choice-card featured-string">
-                    <input type="radio" name="providedString" value="vbs66n">
-                    <span>
-                        <strong>胜利 VBS66N（白色）</strong>
-                        <small>¥28 / 条</small>
-                        <small class="string-tip">VBS66N 推荐您拉 26 磅及以上，体验更佳哦！</small>
-                    </span>
-                    <span class="string-badges" aria-label="万金油，推荐">
-                        <b class="versatile-badge">万金油</b>
-                        <b class="recommend-badge">推荐</b>
-                    </span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="xb63">
-                    <span><strong>YONEX XB63（白色）</strong><small>¥50 / 条</small><small class="string-tip">线皇无需多言</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="bg80">
-                    <span><strong>YONEX BG80（白色）</strong><small>¥38 / 条</small><small class="string-tip">极致硬弹，暴力进攻</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="liningN65">
-                    <span><strong>李宁 N65（白色）</strong><small>¥36 / 条</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="liningNo1">
-                    <span><strong>李宁一号线（黄色）</strong><small>¥33 / 条</small><small class="string-tip">弹性好，比较容易掉磅，推荐高磅27及以上</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="ex63">
-                    <span><strong>卡琳 EX63（淡紫色百搭）</strong><small>¥18 / 条</small><small class="string-tip">63线径弹性好，炫音，高性价比</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="raiming65">
-                    <span><strong>高神雷鸣65（红色）</strong><small>¥30 / 条</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="ion63">
-                    <span><strong>杜力臣 ION63（霓虹粉色）</strong><small>¥35 / 条</small><small class="string-tip">63线径，日产球线硬弹，炫音</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedString" value="js63">
-                    <span><strong>熏风 JS63（白色）</strong><small>¥24 / 条</small></span>
-                </label>
-            </div>
+            <div class="string-options" id="stringOptions"></div>
             <div class="stock-notice">
-                <strong>库存提示</strong>
-                <p>球线颜色以各型号标注为准，现货会不定期补货与更新，请留意网站信息。</p>
+                <strong id="stringStockTitle">库存提示</strong>
+                <p id="stringStockText"></p>
             </div>
             </div>
             <span class="modal-error" id="stringModalError"></span>
@@ -314,33 +223,12 @@
     <div class="modal-overlay" id="gripModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="gripModalTitle">
         <div class="modal-card grip-modal-card">
             <h3 id="gripModalTitle">请选择手胶型号</h3>
-            <div class="string-options grip-options">
-                <label class="choice-card">
-                    <input type="radio" name="providedGrip" value="purui7c">
-                    <span><strong>浦锐 7C</strong><small>¥3.5 / 条</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedGrip" value="huameiAce102">
-                    <span><strong>华美 ACE102</strong><small>¥2.5 / 条</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedGrip" value="yonex102c">
-                    <span><strong>YONEX 102C</strong><small>¥10 / 条</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedGrip" value="victorGr1">
-                    <span><strong>胜利 GR1</strong><small>¥4 / 条</small></span>
-                </label>
-                <label class="choice-card">
-                    <input type="radio" name="providedGrip" value="victorGr223">
-                    <span><strong>胜利 GR223</strong><small>¥8 / 条</small></span>
-                </label>
-            </div>
+            <div class="string-options grip-options" id="gripOptions"></div>
             <div class="grip-wrap-notice" role="note">
                 <span class="grip-notice-icon">⚠️</span>
                 <div>
-                    <strong>请特别注意</strong>
-                    <p>手胶默认不给您缠，在您取拍的时候将新手胶直接给您；需要给您缠好的话，请在备注中说明哦。</p>
+                    <strong id="gripNoticeTitle">请特别注意</strong>
+                    <p id="gripNoticeText"></p>
                 </div>
             </div>
             <span class="modal-error" id="gripModalError"></span>
@@ -357,7 +245,7 @@
             <h3 id="orderReviewTitle">请确认预约订单</h3>
             <div class="screenshot-notice">📸 请截图保存以下订单信息和订单号码</div>
             <div id="orderReviewContent"></div>
-            <p class="payment-note">付款方式：取拍时当面结清。</p>
+            <p class="payment-note" id="paymentNote"></p>
             <div class="modal-actions">
                 <button type="button" class="secondary-btn" id="editOrderBtn">返回修改</button>
                 <button type="button" class="primary-btn" id="confirmSubmitBtn">确认提交预约</button>
@@ -374,9 +262,10 @@
 
     <!-- 底部 -->
     <footer class="footer">
-        <p>© 2026 羽毛球穿线服务 · 手工精调 · 品质保证</p>
+        <p id="footerText"></p>
     </footer>
 
+    <script src="content.js"></script>
     <script src="script-mobile-v12.js?v=20261021-5"></script>
 </body>
 </html>
