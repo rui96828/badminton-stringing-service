@@ -633,9 +633,24 @@
         if (el && value !== undefined && value !== null) el.textContent = String(value);
     }
 
+    function renderBrand(value) {
+        const el = document.getElementById('brandText');
+        if (!el || value === undefined || value === null) return;
+        const label = String(value).trim();
+        const parts = label.match(/^(.*?)(穿线服务预约)(?:[（(]([^）)]+)[）)])?$/);
+        if (!parts || !parts[1]) { el.textContent = label; return; }
+        const name = document.createElement('span');
+        name.className = 'brand-name';
+        name.textContent = parts[1];
+        const service = document.createElement('span');
+        service.className = 'brand-service';
+        service.textContent = parts[2] + (parts[3] ? ' · ' + parts[3] : '');
+        el.replaceChildren(name, service);
+    }
+
     function applySiteContent() {
         if (SITE.title) document.title = SITE.title;
-        setText('brandText', SITE.brand);
+        renderBrand(SITE.brand);
         setText('subtitleText', SITE.subtitle);
         setText('phoneText', SITE.phone);
         setText('phoneNoteText', SITE.phoneNote);

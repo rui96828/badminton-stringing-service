@@ -354,19 +354,20 @@ select:hover ~ .mouse-feather,
 }
 
 .logo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
     min-width: 0;
-    text-wrap: balance;
+    color: #fff;
     font-size: 26px;
     font-weight: 700;
-    letter-spacing: 1px;
+    line-height: 1.25;
     text-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    background: linear-gradient(90deg, #fff, #e0f2fe, #d1fae5, #fff);
-    background-size: 300% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 4s ease-in-out infinite;
 }
+
+.brand-name { font-size: 30px; letter-spacing: 3px; }
+.brand-service { font-size: 15px; font-weight: 500; letter-spacing: 1px; line-height: 1.5; }
 
 .logo-campus { white-space: nowrap; }
 
@@ -1799,7 +1800,9 @@ body.modal-open {
     .featured-string .string-badges {
         position: static; transform: none; margin-left: 23px; justify-content: flex-start;
     }
-    .logo-text { font-size: 17px; letter-spacing: 0; }
+    .logo-text { gap: 4px; font-size: 20px; letter-spacing: 0; }
+    .brand-name { font-size: 24px; letter-spacing: 2px; }
+    .brand-service { font-size: 12px; letter-spacing: 0; }
     .logo { gap: 9px; }
     .logo-icon { width: 64px; height: 38px; border-radius: 8px; }
     .header-subtitle { font-size: 13px; letter-spacing: 2px; }
